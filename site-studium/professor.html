@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Painel do professor — Studium</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="painel.css" />
+  </head>
+  <body>
+    <header class="barra">
+      <nav id="menu">
+        <a href="index.html">Início</a>
+        <a href="#ia">Studium AI</a>
+      </nav>
+      <div class="usuario">
+        Olá, <strong id="nomeuser">Prof. Lucimara!</strong>
+        <button class="btn btn2" id="btnsair">Sair</button>
+      </div>
+    </header>
+
+    <main id="painel">
+      <div class="topopainel">
+        <span class="tag">painel do professor</span>
+        <h1>Suas turmas</h1>
+        <p>
+          Crie uma turma, compartilhe o código e publique as atividades por
+          aqui.
+        </p>
+      </div>
+
+      <div class="gradepainel">
+        <div>
+          <section class="bloco">
+            <h2 id="titulosel">3º ano B — Física</h2>
+            <div id="areaativ">
+              <div class="item-ativ">
+                <div>
+                  <strong>Prova — Óptica Geométrica</strong>
+                  <span>Entrega: 28/09 · 24 de 28 visualizaram</span>
+                </div>
+              </div>
+              <div class="item-ativ">
+                <div>
+                  <strong>Lista de exercícios 4</strong>
+                  <span>Entrega: 20/09 · 24 de 28 entregaram</span>
+                </div>
+              </div>
+              <div class="item-ativ">
+                <div>
+                  <strong>Resumo — Refração da luz</strong>
+                  <span>Material publicado em 12/09</span>
+                </div>
+              </div>
+              <div class="item-ativ">
+                <div>
+                  <strong>Aviso — Aula de revisão</strong>
+                  <span>Enviado pra toda a turma em 10/09</span>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <div>
+          <section class="bloco">
+            <h2>Criar nova turma</h2>
+            <form class="formpainel" id="formturma">
+              <input
+                type="text"
+                id="nometurma"
+                placeholder="Nome da turma (ex: 2º ano B)"
+                required
+              />
+              <input
+                type="text"
+                id="materiaturma"
+                placeholder="Disciplina (ex: Física)"
+              />
+              <button type="submit" class="btn btn1">Criar turma</button>
+            </form>
+            <p class="aviso" id="msgturma"></p>
+          </section>
+
+          <section class="bloco">
+            <h2>Minhas turmas</h2>
+            <div class="listaturmas" id="listaturmas">
+              <div class="item-turma">
+                <div>
+                  <strong>3º ano B — Física</strong>
+                  <span>28 alunos · código A1B2C3</span>
+                </div>
+              </div>
+              <div class="item-turma">
+                <div>
+                  <strong>2º ano A — Física</strong>
+                  <span>31 alunos · código X9Y8Z7</span>
+                </div>
+              </div>
+              <div class="item-turma">
+                <div>
+                  <strong>1º ano C — Ciências</strong>
+                  <span>26 alunos · código M4N5P6</span>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </main>
+
+    <script src="sessao.js"></script>
+    <script src="painel-professor.js"></script>
+  </body>
+</html>

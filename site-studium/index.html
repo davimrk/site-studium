@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Studium" />
+    <title>Studium</title>
+    <link rel="icon" type="image/x-icon" href="/img/STUDIUM.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+  </head>
+  <body>
+    <header id="topo">
+      <div class="logo"><img src="./img/STUDIUM (150 x 100 px).svg" /></div>
+      <nav id="menu">
+        <a href="#ia">Studium AI</a>
+        <a href="#comofunciona">Como funciona</a>
+        <a href="#professor">Para professores</a>
+      </nav>
+
+      <div class="btopo">
+        <button class="btn btn2" id="btnentrar">Entrar</button>
+        <button class="btn btn1" id="btncriar">Criar conta</button>
+      </div>
+    </header>
+    <main>
+      <section class="hero">
+        <div
+          class="container-hero flex items-center justify-between gap-16 flex-wrap"
+        >
+          <div class="hero-texto max-w-md" data-aos="fade-right">
+            <h1 class="logo-hero">st<span class="u">udi</span>um</h1>
+            <p class="subtitulo mb-8">Estudar bem começa com organização.</p>
+            <button class="btn btn1">Comece já!</button>
+          </div>
+
+          <div
+            class="hero-img relative"
+            data-aos="fade-left"
+            data-aos-delay="150"
+          >
+            <div class="blob"></div>
+            <img src="./img/corvo.svg" alt="Corvo Studium" class="corvo" />
+          </div>
+        </div>
+      </section>
+
+      <section class="ia-section" id="ia">
+        <div class="ia-texto" data-aos="fade-right">
+          <span class="tag-mas">studium ai · em desenvolvimento</span>
+          <h2 class="titulo-ia">
+            Você fala o que precisa estudar. A gente monta o plano.
+          </h2>
+          <p class="desc-ia">
+            Três provas na mesma semana? Atividades ENORMES de matemática?
+            Poucas horas livres no dia? Conta pra IA as suas matérias e seus
+            compromissos, e ela sugere um crono que cabe na sua semana de
+            verdade, não numa utopia em que você tá livre todo dia.
+          </p>
+          <button class="btn btn1">Ver como vai funcionar</button>
+        </div>
+
+        <div class="ia-card">
+          <div class="card-topo">
+            <div>
+              <h3>Cronograma sugerido:</h3>
+            </div>
+          </div>
+
+          <ul class="card-lista">
+            <li>
+              <span class="dia">SEG</span>
+              <div class="item">
+                <div class="assunto-ok flex-row">
+                  <strong>Matemática</strong>
+                  <p>Funções · 40 min</p>
+                </div>
+                <i class="fa-jelly-fill fa-regular fa-circle-check"></i>
+              </div>
+            </li>
+            <li>
+              <span class="dia">TER</span>
+              <div class="item">
+                <div class="assunto-ok">
+                  <strong>Física</strong>
+                  <p>Óptica · 30 min</p>
+                </div>
+                <i class="fa-jelly-fill fa-regular fa-circle-check"></i>
+              </div>
+            </li>
+            <li>
+              <span class="dia">QUA</span>
+              <div class="item">
+                <div class="assunto-ok">
+                  <strong>História</strong>
+                  <p>Período Regencial · 45 min</p>
+                </div>
+                <i class="fa-jelly-fill fa-regular fa-circle-check"></i>
+              </div>
+            </li>
+            <li>
+              <span class="dia">QUI</span>
+              <div class="item">
+                <div class="assunto-ok">
+                  <strong>Matemática</strong>
+                  <p>Exercícios · 35 min</p>
+                </div>
+                <i class="fa-jelly-fill fa-regular fa-circle-check"></i>
+              </div>
+            </li>
+            <li>
+              <span class="dia">SEX</span>
+              <div class="item">
+                <div class="assunto-ok">
+                  <strong>Revisão geral</strong>
+                  <p>30 min</p>
+                </div>
+                <i class="fa-jelly-fill fa-regular fa-circle-check"></i>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="comofunciona" id="comofunciona">
+        <div class="chamada-cf" data-aos="fade-up">
+          <span class="tag-mas">Tá, mas...</span>
+          <h2 class="titulo-cf">Como funciona?</h2>
+          <p class="desc-cf">
+            O
+            <strong
+              >St<span class="u">u</span><span class="u">d</span
+              ><span class="u">i</span>um</strong
+            >
+            foi pensado para ser simples e intuitivo. Em poucos passos, você já
+            consegue organizar seus estudos e acompanhar seu progresso.
+          </p>
+        </div>
+        <div class="passos">
+          <div class="linha-passos">
+            <div class="seta">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M5 12h14M13 6l6 6-6 6"
+                  stroke="var(--darkred)"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </div>
+
+            <div class="passo" data-aos="fade-up">
+              <div class="passo-topo">
+                <span class="numero">1</span>
+                <div class="icone"><i class="fa-solid fa-user"></i></div>
+              </div>
+              <h3>Crie sua conta</h3>
+              <p>Adicione suas matérias, atividades e compromissos.</p>
+            </div>
+
+            <div class="seta">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M5 12h14M13 6l6 6-6 6"
+                  stroke="var(--darkred)"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </div>
+
+            <div class="passo" data-aos="fade-up" data-aos-delay="100">
+              <div class="passo-topo">
+                <span class="numero">2</span>
+                <div class="icone"><i class="fa-solid fa-users"></i></div>
+              </div>
+              <h3>Adicione suas turmas</h3>
+              <p>
+                É rápido e gratuito. Basta adicionar seus dados e já começar a
+                usar
+              </p>
+            </div>
+
+            <div class="seta">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M5 12h14M13 6l6 6-6 6"
+                  stroke="var(--darkred)"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </div>
+
+            <div class="passo" data-aos="fade-up" data-aos-delay="200">
+              <div class="passo-topo">
+                <span class="numero">3</span>
+                <div class="icone">
+                  <i class="fa-solid fa-calendar-check"></i>
+                </div>
+              </div>
+              <h3>Faça suas atividades</h3>
+              <p>
+                Faça atividades, veja prazos, data de provas, organize planos de
+                estudos e receba lembretes
+              </p>
+            </div>
+          </div>
+
+          <div class="linha-passos">
+            <div class="seta">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M5 12h14M13 6l6 6-6 6"
+                  stroke="var(--darkred)"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </div>
+
+            <div class="passo" data-aos="fade-up">
+              <div class="passo-topo">
+                <span class="numero">4</span>
+                <div class="icone">
+                  <i class="fa-solid fa-chart-column"></i>
+                </div>
+              </div>
+              <h3>Acompanhe seu progresso</h3>
+              <p>
+                Veja o que já foi feito, o que está em andamento e oque ainda
+                precisa ser concluído. Tenha uma visão clara da sua evolução.
+              </p>
+            </div>
+
+            <div class="seta">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M5 12h14M13 6l6 6-6 6"
+                  stroke="var(--darkred)"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </div>
+
+            <div class="passo" data-aos="fade-up" data-aos-delay="100">
+              <div class="passo-topo">
+                <span class="numero">5</span>
+                <div class="icone"><img src="./img/pombo branco.png" /></div>
+              </div>
+              <h3>
+                Use a St<span class="u2">u</span><span class="u2">d</span
+                ><span class="u2">i</span>um AI
+              </h3>
+              <p class="italico">
+                Conte com nossa IA para tirar dúvidas, resumir conteúdos e te
+                ajudar nos estudos sempre que precisar.
+              </p>
+            </div>
+
+            <div class="seta">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M5 12h14M13 6l6 6-6 6"
+                  stroke="var(--darkred)"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </div>
+
+            <div class="passo" data-aos="fade-up" data-aos-delay="200">
+              <div class="passo-topo">
+                <span class="numero">6</span>
+                <div class="icone">
+                  <i class="fa-solid fa-circle-check"></i>
+                </div>
+              </div>
+              <h3>Conquiste seus objetivos</h3>
+              <p>
+                Com tudo organizado e mais foco, você aprende melhor, tem mais
+                resultados e chega mais longe.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="professor" id="professor">
+        <div class="professor-container">
+          <div class="professor-texto" data-aos="fade-right">
+            <span class="tag-mas">para professores</span>
+            <h2 class="titulo-ia">
+              Sua turma organizada, sem depender de grupo de WhatsApp.
+            </h2>
+            <p class="desc-ia">
+              Crie turmas, publique atividades, lembretes, e acompanhe quem
+              entregou o quê: tudo em um só lugar, sem precisar mandar áudio de
+              dois minutos ou repetir aviso pra quem não viu no grupo.
+            </p>
+
+            <ul class="lista-beneficios">
+              <li>
+                <div class="check">
+                  <i
+                    class="fa-solid fa-school"
+                    style="color: rgb(250, 253, 255)"
+                  ></i>
+                </div>
+                Crie quantas turmas quiser, uma pra cada disciplina ou horário
+              </li>
+              <li>
+                <div class="check">
+                  <i
+                    class="fa-solid fa-book-open-reader"
+                    style="color: rgb(250, 253, 255)"
+                  ></i>
+                </div>
+                Publique atividades com prazo e material de apoio
+              </li>
+              <li>
+                <div class="check">
+                  <i
+                    class="fa-jelly-fill fa-regular fa-eye"
+                    style="color: rgb(250, 253, 255)"
+                  ></i>
+                </div>
+                Veja quem já entregou e quem ainda está pendente
+              </li>
+              <li>
+                <div class="check">
+                  <i
+                    class="fa-regular fa-circle-user"
+                    style="color: rgb(250, 253, 255)"
+                  ></i>
+                </div>
+                Aluno entra na turma uma vez e recebe tudo automaticamente
+              </li>
+            </ul>
+          </div>
+
+          <div class="professor-card" data-aos="fade-left" data-aos-delay="150">
+            <div class="card-topo">
+              <div>
+                <span class="card-label">turma: 3º ano B</span>
+                <h3>Física: Óptica</h3>
+                <span class="badge-ia">28 alunos</span>
+              </div>
+            </div>
+
+            <ul class="card-lista">
+              <li>
+                <div>
+                  <strong>Lista de exercícios 4</strong>
+                  <p>24 de 28 entregaram</p>
+                </div>
+                <span class="dia entregue">OK</span>
+              </li>
+              <li>
+                <div>
+                  <strong>Prova: Óptica Geométrica</strong>
+                  <p>Entrega: 28/09 · ainda aberta</p>
+                </div>
+                <span class="dia pendente">X</span>
+              </li>
+              <li>
+                <div>
+                  <strong>Resumo: Refração da luz</strong>
+                  <p>Material publicado</p>
+                </div>
+                <span class="dia entregue">OK</span>
+              </li>
+              <li>
+                <div>
+                  <strong>Aviso: Aula de revisão</strong>
+                  <p>Enviado pra toda a turma</p>
+                </div>
+                <span class="dia entregue">OK</span>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+                  <a href="#" class="link-professor"
+            >Clique para conhecer a área do professor</a
+          >
+      </section>
+    </main>
+
+    <footer id="rodape" class="footer h-100">
+      <div class="logo flex justify-center">
+        <img src="./img/STUDIUM (150 x 100 px).svg" alt="Studium" />
+      </div>
+      <p>Organize. Estude. Evolua.</p>
+      <span>© 2026 Studium</span>
+    </footer>
+
+    <div id="modal">
+      <div class="fundo" data-fechar></div>
+
+      <div class="caixa">
+        <button class="fechar" data-fechar>×</button>
+
+        <div id="passo1">
+          <p class="tag">bem-vindo ao studium</p>
+          <h2>Como você vai usar?</h2>
+          <p class="descmodal">Escolha seu perfil pra continuar.</p>
+
+          <div class="escolha">
+            <button class="opcao" data-perfil="aluno">
+              <strong>Aluno</strong>
+              <span>Organizar meus estudos</span>
+            </button>
+            <button class="opcao" data-perfil="professor">
+              <strong>Professor</strong>
+              <span>Gerenciar minhas turmas</span>
+            </button>
+          </div>
+
+          <p class="troca">
+            Já tem conta?
+            <button type="button" id="btnlogin">Entrar</button>
+          </p>
+        </div>
+
+        <div id="passo2" hidden>
+          <p class="tag" id="tagform">criar conta</p>
+          <h2 id="tituloform">Quase lá...</h2>
+
+          <form id="formconta">
+            <input
+              type="hidden"
+              id="campo-perfil"
+              name="perfil"
+              value="aluno"
+            />
+
+            <label class="campo" id="camponome">
+              <span>Nome</span>
+              <input
+                type="text"
+                name="nome"
+                id="nome"
+                placeholder="Como podemos te chamar?"
+              />
+            </label>
+
+            <label class="campo">
+              <span>E-mail</span>
+              <input
+                type="email"
+                name="email"
+                id="email"
+                placeholder="voce@email.com"
+                required
+              />
+            </label>
+            <label class="campo">
+              <span>Senha</span>
+              <input
+                type="password"
+                name="senha"
+                id="senha"
+                placeholder="mínimo 6 caracteres"
+                required
+                minlength="6"
+              />
+            </label>
+            <button type="submit" class="btn btn1 btnbig" id="btnenviar">
+              Criar conta
+            </button>
+          </form>
+
+          <p class="troca">
+            <button type="button" id="btnvoltar">← Voltar</button>
+          </p>
+        </div>
+
+        <p id="msg"></p>
+      </div>
+    </div>
+    <script src="modal.js"></script>
+    <script src="animacoes.js"></script>
+    <script src="script.js"></script>
+    <script>
+      AOS.init({
+        duration: 700,
+        once: true,
+        offset: 80,
+      });
+
+      window.addEventListener("load", () => {
+        AOS.refresh();
+      });
+    </script>
+  </body>
+</html>

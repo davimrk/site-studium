@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meu painel — Studium</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="painel.css" />
+  </head>
+  <body>
+    <header class="barra">
+      <div class="logo"><img src="img/STUDIUM (150 x 100 px).svg"></div>
+      <nav>
+        <a href="index.html">Início</a>
+        <a href="#ia">Studium AI</a>
+      </nav>
+      <div class="usuario">
+        Olá, <strong id="nomeuser">Davi!</strong>
+        <button class="btn btn2" id="btnsair">Sair</button>
+      </div>
+    </header>
+
+    <main id="painel">
+      <div class="topopainel">
+        <span class="tag">seu painel</span>
+        <h1>O que você precisa fazer</h1>
+        <p>Suas turmas e as próximas entregas, tudo num lugar só.</p>
+      </div>
+
+      <div class="gradepainel">
+        <div>
+          <section class="bloco">
+            <h2>Próximas atividades</h2>
+            <div class="listaativ" id="listaativ">
+              <div class="item-ativ">
+                <div>
+                  <strong>Prova — Óptica Geométrica</strong>
+                  <span>Física · Entrega: 28/09</span>
+                </div>
+              </div>
+              <div class="item-ativ">
+                <div>
+                  <strong>Lista de exercícios 4</strong>
+                  <span>Física · Entrega: 20/09</span>
+                </div>
+              </div>
+              <div class="item-ativ">
+                <div>
+                  <strong>Redação — Tema livre</strong>
+                  <span>Português · Entrega: 22/09</span>
+                </div>
+              </div>
+              <div class="item-ativ">
+                <div>
+                  <strong>Trabalho em grupo — Revolução Francesa</strong>
+                  <span>História · Entrega: 30/09</span>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <div>
+          <section class="bloco">
+            <h2>Entrar em uma turma</h2>
+            <form class="formpainel" id="formentrar">
+              <input
+                type="text"
+                id="codigo"
+                placeholder="Código da turma (ex: A1B2C3)"
+                maxlength="8"
+                required
+              />
+              <button type="submit" class="btn btn1">Entrar</button>
+            </form>
+            <p class="aviso" id="msgentrar"></p>
+          </section>
+
+          <section class="bloco">
+            <h2>Minhas turmas</h2>
+            <div class="listaturmas" id="listaturmas">
+              <div class="item-turma">
+                <div>
+                  <strong>3º ano B — Física</strong>
+                  <span>Prof. Marcela</span>
+                </div>
+              </div>
+              <div class="item-turma">
+                <div>
+                  <strong>3º ano B — Português</strong>
+                  <span>Prof. Ricardo</span>
+                </div>
+              </div>
+              <div class="item-turma">
+                <div>
+                  <strong>3º ano B — História</strong>
+                  <span>Prof. Aline</span>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </main>
+
+    <script src="sessao.js"></script>
+    <script src="painel-aluno.js"></script>
+  </body>
+</html>
