@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Painel do Docente — Studium</title>
+    <link rel="icon" type="image/svg+xml" href="img/STUDIUM.svg" />
+ 
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap"
+      rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+ 
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="painel.css" />
+  </head>
+  <body>
+    <header class="barra">
+      <a href="index.html" class="logo"
+        ><img src="img/STUDIUM (150 x 100 px).svg" alt="Studium"
+      /></a>
+      <nav id="menu">
+        <a href="index.html">Início</a>
+        <a href="index.html#ia">Studium AI</a>
+      </nav>
+      <div class="usuario">
+        Olá, <strong id="nomeuser">Prof. Lucimara!</strong>
+        <button class="btn btn2" id="btnsair">Sair</button>
+      </div>
+    </header>
+ 
+    <main id="painel">
+      <div class="topopainel">
+        <span class="tag">área do professor</span>
+        <h1>Painel do Docente:</h1>
+        <p>
+          Compartilhe o código de turma e publique as atividades por
+          aqui.
+        </p>
+      </div>
+ 
+      <section class="resumo" aria-label="Resumo">
+        <div class="stat">
+          <div class="stat-icone"><i class="fa-solid fa-school-flag"></i></div>
+          <div>
+            <p>Turmas</p>
+            <strong id="qtTurmas"></strong>
+          </div>
+        </div>
+ 
+        <div class="stat">
+          <div class="stat-icone"><i class="fa-regular fa-file"></i></div>
+          <div>
+            <p>Tarefas / Provas</p>
+            <strong id="qtAtividades"></strong>
+          </div>
+        </div>
+ 
+        <div class="stat">
+          <div class="stat-icone">
+            <i class="fa-solid fa-user-graduate"></i>
+          </div>
+          <div>
+            <p>Alunos</p>
+            <strong id="qtAlunos"></strong>
+          </div>
+        </div>
+      </section>
+ 
+      <div class="gradepainel">
+        <div>
+          <section class="bloco proximas">
+            <div class="cabecalho-bloco">
+              <h2>Próximas atividades</h2>
+              <button type="button" class="vermais" id="vermais" hidden>
+                Ver mais &gt;
+              </button>
+            </div>
+            <div class="listaativ" id="listaAtividades"></div>
+          </section>
+ 
+          <section class="bloco">
+            <h2 id="titulosel">Atividades da turma</h2>
+            <div class="listaativ" id="areaativ"></div>
+          </section>
+        </div>
+ 
+        <div>
+          <section class="bloco">
+            <h2>Publicar na turma</h2>
+            <form class="formpainel" id="formativ">
+              <label class="campo">
+                <span>Turma</span>
+                <select id="selturma"></select>
+              </label>
+              <label class="campo">
+                <span>Tipo</span>
+                <select id="seltipo">
+                  <option value="atividade">Atividade</option>
+                  <option value="prova">Prova</option>
+                  <option value="material">Material de apoio</option>
+                  <option value="aviso">Aviso</option>
+                </select>
+              </label>
+              <input
+                type="text"
+                id="tituloativ"
+                placeholder="Título (ex: Lista de exercícios 5)"
+                maxlength="80"
+                required
+              />
+              <label class="campo" id="campodata">
+                <span>Data de entrega</span>
+                <input type="date" id="dataativ" />
+              </label>
+              <button type="submit" class="btn btn1">Publicar</button>
+            </form>
+            <p class="aviso" id="msgativ"></p>
+          </section>
+ 
+          <section class="bloco">
+            <h2>Criar nova turma</h2>
+            <form class="formpainel" id="formturma">
+              <input
+                type="text"
+                id="nometurma"
+                placeholder="Nome da turma (ex: 2º ano B)"
+                required
+              />
+              <input
+                type="text"
+                id="materiaturma"
+                placeholder="Disciplina (ex: Física)"
+              />
+              <button type="submit" class="btn btn1">Criar turma</button>
+            </form>
+            <p class="aviso" id="msgturma"></p>
+          </section>
+ 
+          <section class="bloco">
+            <h2>Minhas turmas</h2>
+            <div class="listaturmas" id="listaturmas"></div>
+          </section>
+        </div>
+      </div>
+    </main>
+ 
+<script src="professor.js"></script>
+  </body>
+</html>
+ 
+ 
