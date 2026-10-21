@@ -32,6 +32,11 @@ app.post("/login", (req, res) => {
     res.json({ mensagem: "Login realizado!" });
 });
 
+app.post("/api/auth/logout", (req,res) => {
+    res.clearCookie("acess_token", opcoesCookies);
+    res.json ({ message: "Logout efetuado."})
+})
+
 app.get("/verificar", (req, res) => {
     const token = req.cookies.token;
 
