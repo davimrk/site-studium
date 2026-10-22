@@ -26,6 +26,15 @@ function fecharModal() {
   resetform();
 }
 
+function mostrarMensagem(texto, sucesso) {
+    msg.textContent = texto;
+    if (sucesso) {
+        msg.style.color = "green";
+    } else {
+        msg.style.color = "red";
+    }
+}
+
 function resetform() {
   passo1.hidden = false;
   passo2.hidden = true;
@@ -71,41 +80,132 @@ function irPasso2(tipo, perfil) {
   }
 }
 
-document.getElementById("formconta").addEventListener("submit", (e) => {
-  e.preventDefault();
 
-  const email = document.getElementById("email").value.trim();
-  const senha = document.getElementById("senha").value;
+document.getElementById("formconta").addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-  if (!email || !senha) {
-    msg.innerHTML = "Preencha todos os campos.";
-    msg.style.color = "red";
-    return;
-  }
-
-  if (modo === "cadastro") {
     const nome = document.getElementById("nome").value.trim();
-    if (!nome) {
-      msg.innerHTML = "Digite seu nome.";
-      msg.style.color = "red";
-      return;
+    const email = document.getElementById("email").value.trim();
+    const senha = document.getElementById("senha").value;
+
+    if (!email || !senha) {
+        mostrarMensagem("Preencha todos os campos.", false);
+        return;
     }
-    const perfil = campoPerfil.value;
-    if (perfil === "aluno") {
-      msg.innerHTML = "Conta criada com sucesso!";
-      msg.style.color = "green";
-      setTimeout(function () {
-        window.location.href = "aluno.html";
-      }, 1000);
-    } else if (perfil === "professor") {
-      msg.innerHTML = "Conta criada com sucesso!";
-      msg.style.color = "green";
-      setTimeout(function () {
-        window.location.href = "professor.html";
-      }, 1000);
+
+    let endereco;
+    let dadosEnviar;
+
+    if (modo === "cadastro") {
+        if (!nome) {
+            mostrarMensagem("Digite seu nome.", false);
+            return;
+        }
+
+        if (!campoPerfil.value) {
+            mostrarMensagem("Selecione um perfil.", false);
+            return;
+        }
+
+        endereco = "/api/cadastro";
+
+        dadosEnviar = {
+            nome: nome,
+            email: email,
+            senha: senha,
+            perfil: campoPerfil.value
+        };
+
+    } else {
+        endereco = "/api/login";
+
+        dadosEnviar = {
+            email: email,
+            senha: senha
+        };
     }
-  } else {
-    msg.innerHTML = "Entrando...";
-    msg.style.color = "green";
-  }
+
+    btnEnviar.disabled = true;
+
+    try {
+        
+const resposta = await fetch(endereco, {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify(dadosEnviar)
+});
+
+const dados = await resposta.json();
+
+if (!resposta.ok) {
+    mostrarMensagem("Erro ao realizar login ou cadastro.", false);
+    return;
+}
+
+mostrarMensagem("Operação realizada com sucesso!", true);
+
+if (dados.usuario) {
+    if (dados.usuario.perfil === "aluno") {
+        window.location.href = "/aluno.html";
+    } else if (dados.usuario.perfil === "professor") {
+        window.location.href = "/professor.html";
+    } else {
+        mostrarMensagem("Perfil não reconhecido.", false);
+    }
+}
+
+    } catch (erro) {
+        mostrarMensagem("Erro ao conectar com o servidor.", false);
+    } finally {
+        btnEnviar.disabled = false;
+    }
+});
+
+
+
+document.getElementById("formconta").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const email = document.getElementById("email").value.trim();
+    const senha = document.getElementById("senha").value;
+
+    if (!email || !senha) {
+        mostrarMensagem("Preencha todos os campos.", false);
+        return;
+    }
+
+    if (modo === "cadastro") {
+        const nome = document.getElementById("nome").value.trim();
+
+        if (!nome) {
+            mostrarMensagem("Digite seu nome.", false);
+            return;
+        }
+
+        mostrarMensagem("Cadastro ainda não disponível.", false);
+        return;
+    }
+
+    try {
+        const resposta = await fetch("/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ email, senha })
+        });
+
+        const dados = await resposta.json();
+
+        if (resposta.ok) {
+            mostrarMensagem(dados.mensagem, true);
+        } else {
+            mostrarMensagem(dados.mensagem || "Erro no login.", false);
+        }
+
+    } catch (erro) {
+        mostrarMensagem("Erro ao conectar com o servidor.", false);
+    }
 });
