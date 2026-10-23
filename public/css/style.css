@@ -37,7 +37,7 @@ html {
 
 @font-face {
   font-family: "Arista Pro Bold";
-  src: url("./fonts/Arista-Pro-Bold-trial.ttf") format("truetype");
+  src: url("/fonts/Arista-Pro-Bold-trial.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -45,7 +45,7 @@ html {
 
 @font-face {
   font-family: "Arista Pro Light";
-  src: url("./fonts/Arista-Pro-Light-trial.ttf") format("truetype");
+  src: url("/fonts/Arista-Pro-Light-trial.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -53,7 +53,7 @@ html {
 
 @font-face {
   font-family: "Insignia";
-  src: url("./fonts/Insignia.ttf") format("truetype");
+  src: url("/fonts/Insignia.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
   font-display: swap;

@@ -1,22 +1,23 @@
 class Turma {
-  constructor(id, nome) {
+  constructor(id, nome, disciplina) {
     this.id = id;
     this.nome = nome;
     this.alunos = 0;
     this.atividades = [];
+    this.disciplina = disciplina;
   }
 
   exibir() {
     return `
       <div class="item-turma">
-        <strong>${this.nome}</strong>
+        <strong>${this.nome} - ${this.disciplina}</strong>
         <span>${this.alunos} alunos • ${this.atividades.length} atividades</span>
       </div>
     `;
   }
 
   option() {
-    return `<option value="${this.id}">${this.nome}</option>`;
+    return `<option value="${this.id}">${this.nome} - ${this.disciplina}</option>`;
   }
 }
 
@@ -26,14 +27,24 @@ class GerenciadorTurmas {
     this.id = 1;
   }
 
-  criar(nome) {
-    const turma = new Turma(this.id++, nome);
+  criar(nome, disciplina) {
+    const turma = new Turma(this.id++, nome, disciplina);
     this.turmas.push(turma);
     return turma;
   }
 }
 
 const turmas = new GerenciadorTurmas();
+
+function gerarCodigo() {
+  const letras = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let codigo = "";
+  for (let i = 0; i < 6; i++) {
+        const numero = Math.floor(Math.random() * letras.length);
+        codigo += letras[numero];
+    }
+    return codigo;
+}
 
 function atualizarPainel() {
   document.getElementById("listaturmas").innerHTML = turmas.turmas
@@ -81,12 +92,55 @@ document.getElementById("formturma").addEventListener("submit", (e) => {
   e.preventDefault();
 
   const nome = document.getElementById("nometurma").value;
+  const disciplina = document.getElementById("materiaturma").value;
 
-  turmas.criar(nome);
+  turmas.criar(nome, disciplina);
+  
 
   atualizarPainel();
 
   e.target.reset();
+});
+
+const nomeUser = document.getElementById("nomeuser");
+const btnSair = document.getElementById("btnsair");
+
+async function carregarNome() {
+    try {
+        const resposta = await fetch("/api/logado");
+        if (!resposta.ok) {
+            window.location.href = "/index.html";
+            return
+        }
+        const dados = await resposta.json()
+
+        if(dados.usuario.perfil !== "professor") {
+            window.location.href = "/index.html"
+        }
+
+        nomeUser.textContent = dados.usuario.nome
+    } catch (erro) {
+        console.log(erro);
+        window.location.href = "/index.html";
+    }
+}
+
+btnSair.addEventListener("click", async () => {
+    try {
+        const resposta = await fetch("/api/auth/logout", {
+            method: "POST"
+        });
+
+        if (!resposta.ok) {
+            throw new Error("Não foi possível sair da conta");
+        }
+
+        window.location.href = "/index.html";
+
+    } catch (erro) {
+        console.error(erro);
+        alert("Erro ao sair da conta.");
+    }
 });
 
 document.getElementById("formativ").addEventListener("submit", (e) => {
@@ -108,24 +162,6 @@ document.getElementById("formativ").addEventListener("submit", (e) => {
   e.target.reset();
 });
 
-turmas.criar("3º Ano B - Física").alunos = 32;
-turmas.criar("3º Ano B - Português").alunos = 28;
-turmas.criar("3º Ano B - História").alunos = 30;
-
-turmas.turmas[0].atividades.push({
-  titulo: "Prova de Óptica",
-  tipo: "prova",
-  data: "28/09",
-});
-turmas.turmas[1].atividades.push({
-  titulo: "Redação",
-  tipo: "atividade",
-  data: "22/09",
-});
-turmas.turmas[2].atividades.push({
-  titulo: "Revolução Francesa",
-  tipo: "atividade",
-  data: "30/09",
-});
 
 atualizarPainel();
+carregarNome();

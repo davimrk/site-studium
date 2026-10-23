@@ -8,6 +8,16 @@ class Usuario {
   }
 }
 
+class Turma {
+  constructor(id, nome) {
+    this.id = id;
+    this.nome = nome;
+    this.codigo = gerarCodigo();
+    this.alunos = [];
+    this.atividades = [];
+  }
+}
+
 class GerenciadorUsuarios {
   constructor() {
     this.usuarios = [];
@@ -48,3 +58,26 @@ document.getElementById("formconta").addEventListener("submit", (e) => {
     ? usuarioLogado.nome
     : "Visitante";
 });
+
+//rota de login
+const form = document.getElementById("formconta");
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const email = document.getElementById("email").value;
+  const senha = document.getElementById("senha").value;
+
+app.post("/api/login", (req, res) => {
+  const { email, senha} = req.body;
+  const usuario = usuarios.login(email, senha);
+  if (!email || !senha) {
+    return res.status(400).json({erro: "Email e senha são obrigatórios"}); 
+}}
+);
+
+return res.status(401).json({ erro: 'Email ou senha inválidos'});
+});
+//fim da rota de login
+
+//painel professor

@@ -12,7 +12,8 @@
       href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap"
       rel="stylesheet"
     />
-   <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/style.css"/>
+    <link rel="stylesheet" href="/css/modal-adm.css"
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
@@ -34,6 +35,7 @@
       <div class="btopo">
         <button class="btn btn2" id="btnentrar">Entrar</button>
         <button class="btn btn1" id="btncriar">Criar conta</button>
+        <button id="entrarAdmin">Área administrativa</button>
       </div>
     </header>
     <main>
@@ -395,7 +397,7 @@
           </div>
 
         </div>
-        <a href="professor.html" class="link-professor">Conhecer a área do professor</a>
+        <a class="link-professor" id="butaoProf">Conhecer a área do professor</a>
       </section>
     </main>
 
@@ -427,6 +429,7 @@
               <strong>Professor</strong>
               <span>Gerenciar minhas turmas</span>
             </button>
+
           </div>
 
           <p class="troca">
@@ -491,6 +494,52 @@
         <p id="msg"></p>
       </div>
     </div>
+    <div class="modal-admin" id="modalAdmin" hidden>
+    <div class="modal-admin-conteudo">
+
+        <button type="button" id="fecharAdmin" class="fechar-admin">
+            &times;
+        </button>
+
+        <span class="admin-etiqueta">STUDIUM / ADMIN</span>
+
+        <h2>Área administrativa</h2>
+
+        <p class="admin-descricao">
+            Entre com suas credenciais para acessar
+            o painel de administração.
+        </p>
+
+        <form id="formAdmin">
+
+            <label for="emailAdmin">Email</label>
+            <input
+                type="email"
+                id="emailAdmin"
+                placeholder="Seu email"
+                autocomplete="username"
+                required
+            >
+
+            <label for="senhaAdmin">Senha</label>
+
+            <div class="campo-senha-admin">
+                <input
+                    type="password"
+                    id="senhaAdmin"
+                    placeholder="Sua senha"
+                    autocomplete="current-password"
+                    required
+                >
+            </div>
+            <p id="mensagemAdmin" role="status" aria-live="polite"></p>
+            <button type="submit" id="btnLoginAdmin" class="btn-admin">
+                Entrar no painel
+            </button>
+        </form>
+    </div>
+</div>
+    <script src="/js/login-adm.js"></script>
     <script src="/js/modal.js"></script>
     <script src="/js/animacoes.js"></script>
     <script src="/js/script.js"></script>

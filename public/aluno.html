@@ -11,8 +11,8 @@
       href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap"
       rel="stylesheet" />
  
-    <link rel="stylesheet" href="public/style.css" />
-    <link rel="stylesheet" href="painel.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/painel.css" />
   </head>
   <body>
     <header class="barra">
@@ -22,7 +22,7 @@
         <a href="#ia">Studium AI</a>
       </nav>
       <div class="usuario">
-        <h4>Olá, <strong id="nomeuser">Rodrigo!</strong></h4>
+        <h4>Olá, <strong id="nomeuser"></strong></h4>
         <button class="btn btn2" id="btnsair">Sair</button>
       </div>
     </header>
@@ -38,38 +38,7 @@
         <div>
           <section class="bloco">
             <h2>Próximas atividades</h2>
-            <div class="listaativ" id="listaativ">
-              <div class="item-ativ">
-                <div>
-                  <strong>Prova — Óptica Geométrica</strong>
-                  <span>Física · Entrega: 28/09</span>
-                </div>
-              </div>
-              <div class="item-ativ">
-                <div>
-                  <strong>Lista de exercícios 4</strong>
-                  <span>Física · Entrega: 20/09</span>
-                </div>
-              </div>
-              <div class="item-ativ">
-                <div>
-                  <strong>Redação — Racismo Ambiental</strong>
-                  <span>Português · Entrega: 22/09</span>
-                </div>
-              </div>
-              <div class="item-ativ">
-                <div>
-                  <strong>Trabalho em grupo — Revolução Francesa</strong>
-                  <span>História · Entrega: 30/09</span>
-                </div>
-              </div>
-              <div class="item-ativ">
-                <div>
-                  <strong>Trabalho Individual</strong>
-                  <span>Educação Digital · Entrega: 28/09</span>
-                </div>
-              </div>
-            </div>
+           
           </section>
         </div>
 
@@ -106,51 +75,28 @@
           </section>
         </div>
  
-        <div class="paineldireita">
-          <section class="bloco">
-            <h2>Entrar em uma turma</h2>
-            <form class="formpainel" id="formentrar">
-              <input
-                type="text"
-                id="codigo"
-                placeholder="Código da turma (ex: A1B2C3)"
-                maxlength="8"
-                required
-              />
-              <button type="submit" class="btn btn1">Entrar</button>
-            </form>
-            <p class="aviso" id="msgentrar"></p>
-          </section>
+       <div class="paineldireita">
+    <section class="bloco">
+        <h2>Entrar em uma turma</h2>
+
+        <form class="formpainel" id="formentrar">
+            <input type="text" id="codigo" placeholder="Código da turma (ex: A1B2C3)" maxlength="8" required/>
+            <button type="submit" class="btn btn1">Entrar</button>
+        </form>
+        <p class="aviso" id="msgentrar"></p>
+    </section>
+</div>
  
           <section class="bloco">
             <h2>Minhas turmas</h2>
-            <div class="listaturmas" id="listaturmas">
-              <div class="item-turma">
-                <div>
-                  <strong>3º ano B — Física</strong>
-                  <span>Prof. Lucimara</span>
-                </div>
-              </div>
-              <div class="item-turma">
-                <div>
-                  <strong>3º ano B — Português</strong>
-                  <span>Prof. Érica</span>
-                </div>
-              </div>
-              <div class="item-turma">
-                <div>
-                  <strong>3º ano B — História</strong>
-                  <span>Prof. Gustavo</span>
-                </div>
-              </div>
-            </div>
+           
           </section>
         </div>
       </div>
     </main>
  
     <script src="sessao.js"></script>
-    <script src="painel-aluno.js"></script>
+    <script src="/js/painel-aluno.js"></script>
   </body>
 </html>
  

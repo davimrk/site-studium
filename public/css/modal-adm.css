@@ -1,0 +1,213 @@
+:root {
+  --darkred: #870504;
+  --fundo1: #f5f5f5;
+  --fundo2: #f5f2eb;
+  --dmsans: "DM Sans", sans-serif;
+  --arista: "Arista Pro Bold", sans-serif;
+  --insignia: "Insignia", sans-serif;
+  --preto: #000000;
+  --sombra: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+
+  /* layout */
+  --largura: 1160px;
+  --barra: 76px;
+  --lateral: clamp(20px, 5vw, 64px);
+  /* margem lateral que mantém o conteúdo alinhado a --largura em telas largas */
+  --margem: max(var(--lateral), calc((100% - var(--largura)) / 2));
+}
+
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--barra) + 16px);
+}
+
+@font-face {
+  font-family: "Arista Pro Bold";
+  src: url("/fonts/Arista-Pro-Bold-trial.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Arista Pro Light";
+  src: url("/fonts/Arista-Pro-Light-trial.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Insignia";
+  src: url("/fonts/Insignia.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+body {
+  font-family: var(--insignia);
+  background-color: var(--fundo1);
+  color: #111;
+  line-height: 1.5;
+}
+
+.modal-admin[hidden] {
+    display: none;
+}
+
+.modal-admin {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background: rgba(10, 18, 32, 0.65);
+    backdrop-filter: blur(6px);
+}
+
+.modal-admin-conteudo {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+
+    padding: 36px;
+    border-radius: 18px;
+
+    background: #ffffff;
+    color: var(--preto);
+
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+
+    font-family: Arial, sans-serif;
+}
+
+.fechar-admin {
+    position: absolute;
+    top: 14px;
+    right: 18px;
+
+    border: none;
+    background: transparent;
+
+    color: #271f1f;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+.admin-etiqueta {
+    color: #271f1f;
+    font-size: 11px;
+    font-weight: 700;
+    font-family: var(--insignia);
+    letter-spacing: 2px;
+}
+
+.modal-admin h2 {
+    margin: 12px 0;
+    font-family: var(--insignia);
+    font-size: 28px;
+}
+
+.admin-descricao {
+    margin-bottom: 26px;
+    font-family: var(--insignia);
+    color: #271f1f;
+    line-height: 1.6;
+    font-size: 14px;
+}
+
+#formAdmin {
+    display: flex;
+    font-family: var(--insignia);
+    flex-direction: column;
+    gap: 10px;
+}
+
+#formAdmin label {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+#formAdmin input {
+    box-sizing: border-box;
+
+    width: 100%;
+    padding: 13px 14px;
+
+    border: 1px solid #e1cbcb;
+    border-radius: 9px;
+    font-family: var(--dmsans);
+    outline: none;
+    font-size: 14px;
+    background: white;
+    color: var(--preto);
+}
+
+#formAdmin input:focus {
+    border-color: var(--darkred);
+}
+
+.campo-senha-admin {
+    display: flex;
+    font-family: var(--insignia);
+    gap: 8px;
+}
+
+.campo-senha-admin input {
+    flex: 1;
+    font-family: var(--dmsans);
+    min-width: 0;
+}
+
+#mostrarSenhaAdmin {
+    border: 1px solid #e1cbcb;
+    border-radius: 9px;
+    font-family: var(--insignia);
+    padding: 0 12px;
+    background: #fcf8f8;
+
+    cursor: pointer;
+}
+
+.btn-admin {
+    margin-top: 12px;
+    padding: 14px;
+    font-family: var(--insignia);
+    border: none;
+    border-radius: 9px;
+
+    background: var(--darkred);
+    color: white;
+
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.btn-admin:hover {
+    background: #6b1313;
+}
+
+.btn-admin:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+#mensagemAdmin {
+    margin: 4px 0;
+    font-family: var(--insignia);
+    font-size: 13px;
+}
+
+@media (max-width: 480px) {
+    .modal-admin-conteudo {
+        padding: 26px 22px;
+    }
+}
