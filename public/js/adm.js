@@ -1,140 +1,62 @@
-class Usuario {
-  constructor(id, nome, email, perfil) {
-    this.id = id;
-    this.nome = nome;
-    this.email = email;
-    this.perfil = perfil;
-  }
-}
 
-class Turma {
-  constructor(id, nome, codigo, disciplina, professor) {
-    this.id = id;
-    this.nome = nome;
-    this.codigo = codigo;
-    this.disciplina = disciplina;
-    this.professor = professor;
-  }
-}
+const resultado = document.getElementById("resultado");
+const titulo = document.getElementById("titulo");
+const lista = document.getElementById("lista");
+const mensagem = document.getElementById("mensagem");
 
-class GerenciadorAdm {
-  constructor() {
-    this.alunos = [];
-    this.professores = [];
-    this.turmas = [];
-  }
+document.querySelectorAll("[data-consulta]").forEach(botao => {
+    botao.addEventListener("click", async () => {
+        const categoria = botao.dataset.consulta;
 
-  adicionarTurma(turma) {
-    this.turmas.push(turma);
-  }
-  listarTurmas() {
-    return this.turmas;
-  }
+        mensagem.textContent = "Consultando...";
+        resultado.hidden = true;
+        lista.innerHTML = "";
 
-  async buscarTurmas() {
-    const resposta = await fetch("/api/adm/turmas");
-    const dados = await resposta.json();
-    this.turmas = dados;
+        try {
+            const resposta = await fetch(`/api/admin/${categoria}`);
 
-    totalTurmas.textContent = this.turmas.length;
-  }
+            if (resposta.status === 401) {
+                location.href = "/index.html";
+                return;
+            }
 
-  exibirTurmas() {
-    tabela.innerHTML = "";
-    this.turmas.forEach((turma) => {
-      tabela.innerHTML += `
-        <tr>
-            <td>${turma.id}</td>
-            <td>${turma.nome}</td>
-            <td>${turma.codigo}</td>
-        </tr>
-    `;
+            if (!resposta.ok) {
+                throw new Error("Não foi possível consultar os registros.");
+            }
+
+            const dados = await resposta.json();
+
+            titulo.textContent =
+                categoria.charAt(0).toUpperCase() + categoria.slice(1);
+
+            if (dados.length === 0) {
+                lista.textContent = "Nenhum registro encontrado.";
+            }
+
+            dados.forEach(item => {
+                const registro = document.createElement("div");
+                registro.className = "registro";
+
+                const nome = document.createElement("strong");
+                nome.textContent = item.nome;
+
+                const detalhe = document.createElement("span");
+
+                if (categoria === "turmas") {
+                    detalhe.textContent = `Código: ${item.codigo}`;
+                } else {
+                    detalhe.textContent = item.email;
+                }
+
+                registro.append(nome, detalhe);
+                lista.appendChild(registro);
+            });
+
+            resultado.hidden = false;
+            mensagem.textContent = "";
+
+        } catch (erro) {
+            mensagem.textContent = erro.message;
+        }
     });
-  }
-  async buscarProfessores() {
-    const resposta = await fetch("/api/adm/professores");
-    const dados = await resposta.json();
-    this.professores = dados;
-
-    totalProf.textContent = this.professores.length;
-  }
-
-  exibirProfessores() {
-    tabela.innerHTML = "";
-    this.professores.forEach((professor) => {
-      tabela.innerHTML += `
-            <tr>
-            <td>${professor.id}</td>
-            <td>${professor.nome}</td>
-        </tr>
-        `;
-    });
-  }
-
-  async buscarAlunos() {
-    const resposta = await fetch("/api/adm/alunos");
-    const dados = await resposta.json();
-    this.alunos = dados;
-
-    elementoTotal.textContent = this.alunos.length;
-  }
-
-  exibirAlunos() {
-    tabela.innerHTML = "";
-    this.alunos.forEach((aluno) => {
-      tabela.innerHTML += `
-      <tr>
-        <td>${aluno.id}</td>
-        <td>${aluno.nome}</td>
-      </tr>
-      `;
-    });
-  }
-}
-
-const gerenciador = new GerenciadorAdm();
-
-const elementoTotal = document.getElementById("total-alunos");
-const totalProf = document.getElementById("total-professores");
-const totalTurmas = document.getElementById("total-turmas");
-
-const tabela = document.getElementById("registros");
-const botao = document.getElementById("atualizar");
-const categorias = document.querySelectorAll("[data-categoria]");
-const categoria = botao.dataset.categoria;
-
-botao.addEventListener("click", async () => {
-  await Promise.all([
-    gerenciador.buscarTurmas(),
-    gerenciador.buscarAlunos(),
-    gerenciador.buscarProfessores(),
-  ]);
 });
-
-categorias.forEach((botao) => {
-  botao.addEventListener("click", () => {
-    console.log(botao.dataset.categoria);
-  });
-});
-
-categorias.forEach((botao) => {
-  botao.addEventListener("click", () => {
-    const categoria = botao.dataset.categoria;
-
-    if (categoria === "turmas") {
-      gerenciador.exibirTurmas();
-    }
-
-    if (categoria === "professores") {
-      gerenciador.exibirProfessores();
-    }
-
-    if (categoria === "alunos") {
-      gerenciador.exibirAlunos();
-    }
-  });
-});
-
-gerenciador.exibirTurmas();
-gerenciador.exibirProfessores();
-gerenciador.exibirAlunos();

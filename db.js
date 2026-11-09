@@ -48,6 +48,7 @@ async function buscarUsuarioId(id) {
     return resultado[0];
 }
 
+
 async function buscarTurmaCodigo(codigo) {
     const [resultado] = await db.query(
         "select * from turmas where codigo = ?",
@@ -56,6 +57,7 @@ async function buscarTurmaCodigo(codigo) {
 
     return resultado[0];
 }
+
 
 async function verificarMatricula(turmaId, alunoId) {
     const [resultado] = await db.query(
@@ -88,32 +90,25 @@ async function buscarAtividadesAluno(alunoId) {
     return resultado;
 }
 
-async function criarTurma(nome, codigo, professorId, disciplinaId) {
-    const [resultado] = await db.query(
-        "insert into turmas (nome, codigo, professor_id, disciplina_id) values (?, ?, ?, ?)",
-        [nome, codigo, professorId, disciplinaId]
-    );
-
-    return resultado.insertId;
+async function listarTurmas() {
+    const [dados] = await db.query("SELECT id, nome, codigo FROM turmas");
+    return dados;
 }
 
-async function buscarDisciplina(nome) {
-    const [resultado] = await db.query(
-        "select * from disciplinas where nome = ?",
-        [nome]
+async function listarProfessores() {
+    const [dados] = await db.query(
+        "SELECT id, nome, email FROM usuarios WHERE perfil = 'professor'"
     );
-
-    return resultado[0];
+    return dados;
 }
 
-async function criarDisciplina(nome) {
-    const [resultado] = await db.query(
-        "insert into disciplinas (nome) values (?)",
-        [nome]
+async function listarAlunos() {
+    const [dados] = await db.query(
+        "SELECT id, nome, email FROM usuarios WHERE perfil = 'aluno'"
     );
-
-    return resultado.insertId;
+    return dados;
 }
+
 
 module.exports = {
     cadastrarUsuario,
@@ -124,7 +119,7 @@ module.exports = {
     buscarTurmaCodigo,
     buscarTurmasAluno,
     buscarAtividadesAluno,
-    criarTurma,
-    buscarDisciplina,
-    criarDisciplina
-};
+    listarTurmas,
+    listarAlunos,
+    listarProfessores
+}

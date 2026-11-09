@@ -1,24 +1,38 @@
 class Turma {
-  constructor(id, nome, disciplina) {
-    this.id = id;
-    this.nome = nome;
-    this.alunos = 0;
-    this.atividades = [];
-    this.disciplina = disciplina;
-  }
+    constructor(id, nome, disciplina) {
+        this.id = id;
+        this.nome = nome;
+        this.disciplina = disciplina;
+        this.codigo = gerarCodigo();
+        this.alunos = 0;
+        this.atividades = [];
+    }
 
-  exibir() {
-    return `
-      <div class="item-turma">
-        <strong>${this.nome} - ${this.disciplina}</strong>
-        <span>${this.alunos} alunos • ${this.atividades.length} atividades</span>
-      </div>
-    `;
-  }
+    exibir() {
+        return `
+            <div class="item-turma">
+                <strong>${this.nome}</strong>
+                <span>Código: ${this.codigo}</span>
+                <span>${this.alunos} alunos • ${this.atividades.length} atividades</span>
+            </div>
+        `;
+    }
 
-  option() {
-    return `<option value="${this.id}">${this.nome} - ${this.disciplina}</option>`;
-  }
+    option() {
+        return `<option value="${this.id}">${this.nome} - ${this.disciplina}</option>`;
+    }
+}
+
+function gerarCodigo() {
+    const caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let codigo = "";
+
+    for (let i = 0; i < 6; i++) {
+        const numero = Math.floor(Math.random() * caracteres.length);
+        codigo += caracteres[numero];
+    }
+
+    return codigo;
 }
 
 class GerenciadorTurmas {
@@ -35,16 +49,6 @@ class GerenciadorTurmas {
 }
 
 const turmas = new GerenciadorTurmas();
-
-function gerarCodigo() {
-  const letras = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  let codigo = "";
-  for (let i = 0; i < 6; i++) {
-        const numero = Math.floor(Math.random() * letras.length);
-        codigo += letras[numero];
-    }
-    return codigo;
-}
 
 function atualizarPainel() {
   document.getElementById("listaturmas").innerHTML = turmas.turmas

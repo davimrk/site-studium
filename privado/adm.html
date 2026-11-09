@@ -1,127 +1,39 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Administração — Studium</title>
 
-    <link rel="icon" href="img/STUDIUM.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="/css/adm.css" />
+    <link rel="stylesheet" href="/css/adm.css">
     <script src="/js/adm.js" defer></script>
-  </head>
+</head>
+<body>
 
-  <body>
-    <header class="cabecalho">
-      <a href="index.html" aria-label="Studium, início">
-        <img src="img/STUDIUM (150 x 100 px).svg" alt="Studium" />
-      </a>
-
-      <span>Equipe Studium · Administração</span>
+    <header>
+        <h2>STUDIUM</h2>
+        <span>Administração</span>
     </header>
 
     <main>
-      <section class="introducao">
-        <p class="sobretitulo">GESTÃO DA PLATAFORMA</p>
-        <h1>Painel do administrador</h1>
-        <p>Gerencie as turmas, os professores e os alunos cadastrados.</p>
-      </section>
+        <h1>Painel administrativo</h1>
+        <p>Selecione o que deseja consultar.</p>
 
-      <section class="resumo" aria-label="Resumo dos cadastros">
-        <article>
-          <span>Turmas</span>
-          <strong id="total-turmas"></strong>
-        </article>
-
-        <article>
-          <span>Professores</span>
-          <strong id="total-professores"></strong>
-        </article>
-
-        <article>
-          <span>Alunos</span>
-          <strong id="total-alunos"></strong>
-        </article>
-      </section>
-
-      <section
-        class="registros"
-        aria-labelledby="titulo-registros"
-        aria-busy="false"
-      >
-        <div class="ferramentas">
-          <div>
-            <h2 id="titulo-registros">Registros da plataforma</h2>
-            <p>Consulte e remova cadastros.</p>
-          </div>
-
-          <button type="button" id="atualizar" class="botao">
-            Atualizar registros
-          </button>
+        <div class="botoes">
+            <button data-consulta="turmas">Turmas</button>
+            <button data-consulta="professores">Professores</button>
+            <button data-consulta="alunos">Alunos</button>
         </div>
 
-        <div class="busca">
-          <label for="busca">Buscar registros</label>
-          <input
-            id="busca"
-            type="search"
-            placeholder="Digite um nome, email ou turma"
-          />
-        </div>
+        <section id="resultado" hidden>
+            <h2 id="titulo"></h2>
+            <div id="lista"></div>
+        </section>
 
-        <nav class="categorias" aria-label="Categorias">
-          <button type="button" data-categoria="turmas" aria-pressed="true">
-            Turmas
-          </button>
-
-          <button
-            type="button"
-            data-categoria="professores"
-            aria-pressed="false"
-          >
-            Professores
-          </button>
-
-          <button type="button" data-categoria="alunos" aria-pressed="false">
-            Alunos
-          </button>
-        </nav>
-
-        <div class="tabela-container">
-          <table>
-            <caption id="legenda">
-              Turmas cadastradas
-            </caption>
-            <thead id="colunas"></thead>
-            <tbody id="registros"></tbody>
-          </table>
-        </div>
-
-        <p id="vazio" class="vazio" hidden>Nenhum registro encontrado.</p>
-
-        <p id="quantidade" class="quantidade"></p>
-      </section>
-
-      <p id="mensagem" class="mensagem" role="status"></p>
+        <p id="mensagem" role="status"></p>
     </main>
 
-    <dialog
-      id="confirmacao"
-      aria-labelledby="titulo-confirmacao"
-      aria-describedby="descricao-confirmacao"
-    >
-      <form method="dialog">
-        <h2 id="titulo-confirmacao">Remover registro?</h2>
-
-        <p id="descricao-confirmacao"></p>
-        <p>A exclusão será enviada ao servidor.</p>
-
-        <div class="acoes">
-          <button class="botao" value="cancelar" autofocus>Cancelar</button>
-
-          <button class="botao perigo" value="remover">Remover registro</button>
-        </div>
-      </form>
-    </dialog>
-  </body>
+</body>
 </html>
