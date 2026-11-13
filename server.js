@@ -47,30 +47,41 @@ function usuarioPublico({ id, nome, email, perfil }) {
     return { id, nome, email, perfil };
 }
 
-async function verificarToken(req, res, next) {
-    const token = req.cookies.token;
-
-    if (!token) {
-        return res.status(401).json({
-            mensagem: "Você precisa fazer login!"
-        });
-    }
+async function buscarUsuarioDaSessao(token) {
+    if (!token) return null;
 
     let dados;
     try {
         dados = jwt.verify(token, process.env.JWT_SECRET, { algorithms: ["HS256"] });
     } catch {
-        return res.status(401).json({ mensagem: "Sessão inválida ou expirada!" });
+        return null;
     }
 
-    const usuario = await buscarUsuarioId(dados.id);
+    return buscarUsuarioId(dados.id);
+}
+
+async function verificarToken(req, res, next) {
+    const usuario = await buscarUsuarioDaSessao(req.cookies.token);
     if (!usuario) {
-        return res.status(401).json({ mensagem: "Usuário não encontrado!" });
+        return res.status(401).json({ mensagem: "Faça login para continuar." });
     }
 
     req.usuario = usuarioPublico(usuario);
     next();
 }
+
+app.get(["/", "/index.html"], async (req, res) => {
+    res.set("Cache-Control", "no-store");
+    const usuario = await buscarUsuarioDaSessao(req.cookies.token);
+
+    if (usuario) {
+        if (usuario.perfil === "admin") return res.redirect("/adm.html");
+        if (usuario.perfil === "professor") return res.redirect("/professor.html");
+        if (usuario.perfil === "aluno") return res.redirect("/aluno.html");
+    }
+
+    res.sendFile(path.join(__dirname, "privado", "index.html"));
+});
 
 function exigirPerfil(perfil) {
     return (req, res, next) => {

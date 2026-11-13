@@ -38,12 +38,13 @@ html {
 .nav-studium .nav-marca {
   justify-self: start;
   display: block;
+  border-radius: 22px;
 }
 
 .nav-marca img {
   display: block;
-  width: 108px;
-  height: 54px;
+  width: 128px;
+  height: 68px;
   object-fit: contain;
 }
 

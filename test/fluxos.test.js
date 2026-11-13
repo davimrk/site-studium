@@ -51,6 +51,7 @@ test("sessão, admin, turmas e atividades pela API HTTP", async contexto => {
     const base = `http://127.0.0.1:${servidor.address().port}`;
     function requisicao(rota, corpo, cookie) {
         return fetch(base + rota, {
+            redirect: "manual",
             method: corpo === undefined ? "GET" : "POST",
             headers: { "Content-Type": "application/json", Cookie: cookie || "" },
             body: JSON.stringify(corpo)
@@ -61,6 +62,11 @@ test("sessão, admin, turmas e atividades pela API HTTP", async contexto => {
         assert.equal(resposta.status, codigo, args[0]);
         return resposta;
     };
+
+    const visitante = await status(200, "/");
+    assert.equal(visitante.headers.get("cache-control"), "no-store");
+    await status(200, "/index.html");
+    await status(200, "/index.html", undefined, "token=invalido");
 
     await status(401, "/adm.html");
     await status(401, "/api/atividades", {});
@@ -80,12 +86,18 @@ test("sessão, admin, turmas e atividades pela API HTTP", async contexto => {
     assert.match(cookie, /HttpOnly/);
     assert.match(cookie, /SameSite=Strict/);
     const prof = cookie.split(";")[0];
+    const homeAluno = await status(302, "/", undefined, aluno);
+    assert.equal(homeAluno.headers.get("location"), "/aluno.html");
+    const homeAdmin = await status(302, "/index.html", undefined, prof);
+    assert.equal(homeAdmin.headers.get("location"), "/adm.html");
     await status(200, "/adm.html", undefined, prof);
     const sessao = await status(200, "/api/logado", undefined, prof);
     assert.deepEqual((await sessao.json()).usuario, {
         id: 1, nome: "Prof", email: usuarios[0].email, perfil: "admin"
     });
     usuarios[0].perfil = "professor";
+    const homeProfessor = await status(302, "/index.html", undefined, prof);
+    assert.equal(homeProfessor.headers.get("location"), "/professor.html");
     await status(403, "/api/admin/turmas", undefined, prof);
     await status(201, "/api/professor/turmas", { nome: "2º ano B", disciplina: "Física" }, prof);
     const atividade = { turmaId: 1, titulo: "Lista 5", tipo: "atividade", data: "2026-12-01" };
