@@ -52,7 +52,7 @@ modal.addEventListener("click", (e) => {
 });
 
 document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && !modalAdmin.hidden) {
+    if (e.key === "Escape" && modal.classList.contains("ativo")) {
         fecharModal();
     }
 });
@@ -186,10 +186,10 @@ form.addEventListener("submit", async (e) => {
             const dadosLogin = await respostaLogin.json();
 
             if (!respostaLogin.ok) {
+                irPasso2("login");
                 msg.textContent =
                     "Conta criada! Faça login para continuar.";
                 msg.style.color = "green";
-                irPasso2("login");
                 return;
             }
 
