@@ -96,7 +96,7 @@
             <form class="formpainel" id="formativ">
               <label class="campo">
                 <span>Turma</span>
-                <select id="selturma"></select>
+                <select id="selturma" required></select>
               </label>
               <label class="campo">
                 <span>Tipo</span>
@@ -118,7 +118,7 @@
                 <span>Data de entrega</span>
                 <input type="date" id="dataativ" />
               </label>
-              <button type="submit_ativ" class="btn btn1">Publicar</button>
+              <button type="submit" class="btn btn1">Publicar</button>
             </form>
             <p class="aviso" id="msgativ"></p>
           </section>
@@ -128,13 +128,13 @@
             <form class="formpainel" id="formturma">
               <input
                 type="text"
-                id="nometurma"
+                id="nometurma" maxlength="100"
                 placeholder="Nome da turma (ex: 2º ano B)"
                 required
               />
               <input
                 type="text"
-                id="materiaturma"
+                id="materiaturma" maxlength="100" required
                 placeholder="Disciplina (ex: Física)"
               />
               <button type="submit" class="btn btn1">Criar turma</button>

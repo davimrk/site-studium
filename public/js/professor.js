@@ -1,171 +1,131 @@
-class Turma {
-    constructor(id, nome, disciplina) {
-        this.id = id;
-        this.nome = nome;
-        this.disciplina = disciplina;
-        this.codigo = gerarCodigo();
-        this.alunos = 0;
-        this.atividades = [];
-    }
+const nomeUser = document.getElementById("nomeuser");
+const seletorTurma = document.getElementById("selturma");
+const formTurma = document.getElementById("formturma");
+const formAtividade = document.getElementById("formativ");
+let turmas = [];
 
-    exibir() {
-        return `
-            <div class="item-turma">
-                <strong>${this.nome}</strong>
-                <span>Código: ${this.codigo}</span>
-                <span>${this.alunos} alunos • ${this.atividades.length} atividades</span>
-            </div>
-        `;
+function item(classe, titulo, detalhes) {
+    const elemento = document.createElement("div");
+    elemento.className = classe;
+    const nome = document.createElement("strong");
+    nome.textContent = titulo;
+    elemento.append(nome);
+    for (const detalhe of detalhes) {
+        const linha = document.createElement("span");
+        linha.textContent = detalhe;
+        elemento.append(linha);
     }
-
-    option() {
-        return `<option value="${this.id}">${this.nome} - ${this.disciplina}</option>`;
-    }
+    return elemento;
 }
-
-function gerarCodigo() {
-    const caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    let codigo = "";
-
-    for (let i = 0; i < 6; i++) {
-        const numero = Math.floor(Math.random() * caracteres.length);
-        codigo += caracteres[numero];
-    }
-
-    return codigo;
-}
-
-class GerenciadorTurmas {
-  constructor() {
-    this.turmas = [];
-    this.id = 1;
-  }
-
-  criar(nome, disciplina) {
-    const turma = new Turma(this.id++, nome, disciplina);
-    this.turmas.push(turma);
-    return turma;
-  }
-}
-
-const turmas = new GerenciadorTurmas();
 
 function atualizarPainel() {
-  document.getElementById("listaturmas").innerHTML = turmas.turmas
-    .map((t) => t.exibir())
-    .join("");
+    const selecionada = seletorTurma.value;
+    seletorTurma.replaceChildren(new Option("Selecione", ""));
+    const listaTurmas = document.getElementById("listaturmas");
+    const listaAtividades = document.getElementById("listaAtividades");
+    listaTurmas.replaceChildren();
+    listaAtividades.replaceChildren();
+    let alunos = 0;
+    let atividades = 0;
 
-  document.getElementById("selturma").innerHTML =
-    `<option value="">Selecione</option>` +
-    turmas.turmas.map((t) => t.option()).join("");
-
-  document.getElementById("qtTurmas").textContent = turmas.turmas.length;
-
-  let totalAlunos = 0;
-  let totalAtividades = 0;
-
-  for (let i = 0; i < turmas.turmas.length; i++) {
-    totalAlunos += turmas.turmas[i].alunos;
-    totalAtividades += turmas.turmas[i].atividades.length;
-  }
-
-  document.getElementById("qtAlunos").textContent = totalAlunos;
-  document.getElementById("qtAtividades").textContent = totalAtividades;
-
-  let html = "";
-
-  for (let i = 0; i < turmas.turmas.length; i++) {
-    const turma = turmas.turmas[i];
-
-    for (let j = 0; j < turma.atividades.length; j++) {
-      const a = turma.atividades[j];
-
-      html += `
-        <div class="item-ativ">
-          <strong>${a.titulo}</strong>
-          <span>${turma.nome} • ${a.tipo} • ${a.data || ""}</span>
-        </div>
-      `;
+    for (const turma of turmas) {
+        alunos += Number(turma.alunos);
+        atividades += turma.atividades.length;
+        seletorTurma.add(new Option(`${turma.nome} - ${turma.disciplina}`, turma.id));
+        listaTurmas.append(item("item-turma", turma.nome, [
+            `Código: ${turma.codigo}`,
+            `${turma.alunos} alunos • ${turma.atividades.length} atividades`
+        ]));
+        for (const atividade of turma.atividades) {
+            listaAtividades.append(item("item-ativ", atividade.titulo, [
+                [turma.nome, atividade.tipo, atividade.data].filter(Boolean).join(" • ")
+            ]));
+        }
     }
-  }
 
-  document.getElementById("listaAtividades").innerHTML = html;
+    seletorTurma.value = selecionada;
+    document.getElementById("qtTurmas").textContent = turmas.length;
+    document.getElementById("qtAlunos").textContent = alunos;
+    document.getElementById("qtAtividades").textContent = atividades;
 }
 
-document.getElementById("formturma").addEventListener("submit", (e) => {
-  e.preventDefault();
+async function consultar(url, corpo) {
+    const resposta = await fetch(url, corpo && {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(corpo)
+    });
+    if (resposta.status === 401) window.location.href = "/index.html";
+    const dados = await resposta.json();
+    if (!resposta.ok) throw new Error(dados.mensagem || "Não foi possível concluir a operação.");
+    return dados;
+}
 
-  const nome = document.getElementById("nometurma").value;
-  const disciplina = document.getElementById("materiaturma").value;
+function enviar(formulario, aviso, acao) {
+    formulario.addEventListener("submit", async evento => {
+        evento.preventDefault();
+        const botao = formulario.querySelector('button[type="submit"]');
+        botao.disabled = true;
+        aviso.textContent = "";
+        try {
+            const mensagem = await acao();
+            formulario.reset();
+            atualizarPainel();
+            aviso.textContent = mensagem;
+        } catch (erro) {
+            aviso.textContent = erro.message;
+        } finally {
+            botao.disabled = false;
+        }
+    });
+}
 
-  turmas.criar(nome, disciplina);
-  
-
-  atualizarPainel();
-
-  e.target.reset();
+enviar(formTurma, document.getElementById("msgturma"), async () => {
+    const turma = await consultar("/api/professor/turmas", {
+        nome: document.getElementById("nometurma").value,
+        disciplina: document.getElementById("materiaturma").value
+    });
+    turmas.push(turma);
+    return "Turma criada!";
 });
 
-const nomeUser = document.getElementById("nomeuser");
-const btnSair = document.getElementById("btnsair");
+enviar(formAtividade, document.getElementById("msgativ"), async () => {
+    const turmaId = Number(seletorTurma.value);
+    const atividade = await consultar("/api/atividades", {
+        turmaId,
+        titulo: document.getElementById("tituloativ").value,
+        tipo: document.getElementById("seltipo").value,
+        data: document.getElementById("dataativ").value
+    });
+    turmas.find(turma => Number(turma.id) === turmaId)?.atividades.push(atividade);
+    return "Atividade publicada!";
+});
 
-async function carregarNome() {
+document.getElementById("btnsair").addEventListener("click", async () => {
     try {
-        const resposta = await fetch("/api/logado");
-        if (!resposta.ok) {
+        await consultar("/api/auth/logout", {});
+        window.location.href = "/index.html";
+    } catch (erro) {
+        alert(erro.message);
+    }
+});
+
+async function iniciar() {
+    const botoes = [formTurma, formAtividade].map(form => form.querySelector('button[type="submit"]'));
+    botoes.forEach(botao => { botao.disabled = true; });
+    try {
+        const { usuario } = await consultar("/api/logado");
+        if (usuario.perfil !== "professor") {
             window.location.href = "/index.html";
-            return
+            return;
         }
-        const dados = await resposta.json()
-
-        if(dados.usuario.perfil !== "professor") {
-            window.location.href = "/index.html"
-        }
-
-        nomeUser.textContent = dados.usuario.nome
+        nomeUser.textContent = usuario.nome;
+        turmas = await consultar("/api/professor/turmas");
+        atualizarPainel();
+        botoes.forEach(botao => { botao.disabled = false; });
     } catch (erro) {
-        console.log(erro);
-        window.location.href = "/index.html";
+        document.getElementById("msgturma").textContent = erro.message;
     }
 }
 
-btnSair.addEventListener("click", async () => {
-    try {
-        const resposta = await fetch("/api/auth/logout", {
-            method: "POST"
-        });
-
-        if (!resposta.ok) {
-            throw new Error("Não foi possível sair da conta");
-        }
-
-        window.location.href = "/index.html";
-
-    } catch (erro) {
-        console.error(erro);
-        alert("Erro ao sair da conta.");
-    }
-});
-
-document.getElementById("formativ").addEventListener("submit", (e) => {
-  e.preventDefault();
-
-  const id = document.getElementById("selturma").value;
-  const titulo = document.getElementById("tituloativ").value;
-  const tipo = document.getElementById("seltipo").value;
-  const data = document.getElementById("dataativ").value;
-
-  const turma = turmas.turmas.find((t) => t.id == id);
-
-  if (!turma) return;
-
-  turma.atividades.push({ titulo, tipo, data });
-
-  atualizarPainel();
-
-  e.target.reset();
-});
-
-
-atualizarPainel();
-carregarNome();
+iniciar();

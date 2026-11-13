@@ -1,8 +1,9 @@
+const { randomBytes } = require("node:crypto");
 const mysql = require("mysql2/promise");
-require("dotenv").config();
 
 const db = mysql.createPool({
     host: process.env.DB_HOST,
+    port: Number(process.env.DB_PORT || 3306),
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME
@@ -41,7 +42,7 @@ async function buscarUsuarioEmail(email) {
 
 async function buscarUsuarioId(id) {
     const [resultado] = await db.query(
-        "select id, nome, email, perfil from usuarios where id = ?",
+        "select id, nome, email, perfil, admin from usuarios where id = ?",
         [id]
     );
 
@@ -110,6 +111,67 @@ async function listarAlunos() {
 }
 
 
+async function listarTurmasProfessor(professorId) {
+    const [turmas] = await db.execute(
+        `SELECT t.id, t.nome, t.codigo, d.nome AS disciplina,
+            (SELECT COUNT(*) FROM turma_alunos WHERE turma_id = t.id) AS alunos
+         FROM turmas t JOIN disciplinas d ON d.id = t.disciplina_id
+         WHERE t.professor_id = ? ORDER BY t.id`,
+        [professorId]
+    );
+    return turmas;
+}
+
+async function listarAtividadesProfessor(professorId) {
+    const [atividades] = await db.execute(
+        `SELECT a.id, a.turma_id, a.titulo, a.tipo,
+            DATE_FORMAT(a.data_entrega, '%Y-%m-%d') AS data
+         FROM atividades a JOIN turmas t ON t.id = a.turma_id
+         WHERE t.professor_id = ? ORDER BY a.data_entrega, a.id`,
+        [professorId]
+    );
+    return atividades;
+}
+
+async function criarTurma(professorId, nome, disciplina) {
+    const conexao = await db.getConnection();
+    try {
+        await conexao.beginTransaction();
+        const [materia] = await conexao.execute(
+            `INSERT INTO disciplinas (nome) VALUES (?)
+             ON DUPLICATE KEY UPDATE id = LAST_INSERT_ID(id)`,
+            [disciplina]
+        );
+        for (let tentativa = 0; tentativa < 3; tentativa++) {
+            const codigo = randomBytes(3).toString("hex").toUpperCase();
+            try {
+                const [resultado] = await conexao.execute(
+                    "INSERT INTO turmas (nome, codigo, disciplina_id, professor_id) VALUES (?, ?, ?, ?)",
+                    [nome, codigo, materia.insertId, professorId]
+                );
+                await conexao.commit();
+                return { id: resultado.insertId, nome, disciplina, codigo, alunos: 0, atividades: [] };
+            } catch (erro) {
+                if (erro.code !== "ER_DUP_ENTRY" || tentativa === 2) throw erro;
+            }
+        }
+    } catch (erro) {
+        await conexao.rollback();
+        throw erro;
+    } finally {
+        conexao.release();
+    }
+}
+
+async function criarAtividade(professorId, turmaId, { titulo, tipo, data }) {
+    const [resultado] = await db.execute(
+        `INSERT INTO atividades (turma_id, titulo, descricao, tipo, data_entrega)
+         SELECT id, ?, '', ?, ? FROM turmas WHERE id = ? AND professor_id = ?`,
+        [titulo, tipo, data, turmaId, professorId]
+    );
+    return resultado.affectedRows ? resultado.insertId : null;
+}
+
 module.exports = {
     cadastrarUsuario,
     buscarUsuarioEmail,
@@ -121,5 +183,9 @@ module.exports = {
     buscarAtividadesAluno,
     listarTurmas,
     listarAlunos,
-    listarProfessores
+    listarProfessores,
+    listarTurmasProfessor,
+    listarAtividadesProfessor,
+    criarTurma,
+    criarAtividade
 }
