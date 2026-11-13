@@ -43,8 +43,8 @@ if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32) {
     throw new Error("Configure uma chave JWT com pelo menos 32 caracteres");
 }
 
-function usuarioPublico({ id, nome, email, perfil, admin }) {
-    return { id, nome, email, perfil, admin: Number(admin) === 1 };
+function usuarioPublico({ id, nome, email, perfil }) {
+    return { id, nome, email, perfil };
 }
 
 async function verificarToken(req, res, next) {
@@ -83,13 +83,7 @@ function exigirPerfil(perfil) {
 
 const somenteAluno = exigirPerfil("aluno");
 const somenteProfessor = exigirPerfil("professor");
-
-function somenteAdmin(req, res, next) {
-    if (!req.usuario.admin) {
-        return res.status(403).json({ mensagem: "Acesso administrativo não autorizado." });
-    }
-    next();
-}
+const somenteAdmin = exigirPerfil("admin");
 
 app.post("/api/cadastro", async (req, res) => {
     try {
@@ -153,7 +147,7 @@ function login(administrativo = false) {
         }
 
         const dados = usuarioPublico(usuario);
-        if (administrativo && !dados.admin) {
+        if (administrativo && dados.perfil !== "admin") {
             return res.status(403).json({ mensagem: "Acesso administrativo não autorizado" });
         }
 
@@ -231,11 +225,10 @@ app.get("/api/minhas-atividades", verificarToken, somenteAluno, async (req, res)
 app.get("/api/professor/turmas", verificarToken, somenteProfessor, async (req, res) => {
     const turmas = await listarTurmasProfessor(req.usuario.id);
     const atividades = await listarAtividadesProfessor(req.usuario.id);
-    const porTurma = new Map(turmas.map(turma => [turma.id, { ...turma, atividades: [] }]));
-    for (const atividade of atividades) {
-        porTurma.get(atividade.turma_id)?.atividades.push(atividade);
+    for (const turma of turmas) {
+        turma.atividades = atividades.filter(atividade => atividade.turma_id === turma.id);
     }
-    res.json([...porTurma.values()]);
+    res.json(turmas);
 });
 
 app.post("/api/professor/turmas", verificarToken, somenteProfessor, async (req, res) => {
@@ -252,7 +245,7 @@ app.post("/api/atividades", verificarToken, somenteProfessor, async (req, res) =
     const { turmaId, titulo, tipo, data } = req.body ?? {};
     if (!Number.isSafeInteger(turmaId) || turmaId < 1 ||
         typeof titulo !== "string" || !titulo.trim() || titulo.trim().length > 80 ||
-        !["atividade", "prova", "material", "aviso"].includes(tipo)) {
+        (tipo !== "atividade" && tipo !== "prova")) {
         return res.status(400).json({ mensagem: "Informe uma turma, um título válido e o tipo." });
     }
 
@@ -311,9 +304,5 @@ app.use((erro, req, res, next) => {
     res.status(500).json({ mensagem: "Não foi possível concluir a operação." });
 });
 
-if (require.main === module) {
-    const porta = Number(process.env.PORT || 3000);
-    app.listen(porta, () => console.log(`Servidor rodando na porta ${porta}`));
-}
-
-module.exports = app;
+const porta = Number(process.env.PORT || 3000);
+app.listen(porta, () => console.log("Servidor rodando na porta " + porta));

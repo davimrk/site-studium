@@ -42,7 +42,7 @@ async function buscarUsuarioEmail(email) {
 
 async function buscarUsuarioId(id) {
     const [resultado] = await db.query(
-        "select id, nome, email, perfil, admin from usuarios where id = ?",
+        "select id, nome, email, perfil from usuarios where id = ?",
         [id]
     );
 
@@ -137,24 +137,27 @@ async function criarTurma(professorId, nome, disciplina) {
     const conexao = await db.getConnection();
     try {
         await conexao.beginTransaction();
-        const [materia] = await conexao.execute(
-            `INSERT INTO disciplinas (nome) VALUES (?)
-             ON DUPLICATE KEY UPDATE id = LAST_INSERT_ID(id)`,
+        const [disciplinas] = await conexao.execute(
+            "SELECT id FROM disciplinas WHERE nome = ? ORDER BY id LIMIT 1",
             [disciplina]
         );
-        for (let tentativa = 0; tentativa < 3; tentativa++) {
-            const codigo = randomBytes(3).toString("hex").toUpperCase();
-            try {
-                const [resultado] = await conexao.execute(
-                    "INSERT INTO turmas (nome, codigo, disciplina_id, professor_id) VALUES (?, ?, ?, ?)",
-                    [nome, codigo, materia.insertId, professorId]
-                );
-                await conexao.commit();
-                return { id: resultado.insertId, nome, disciplina, codigo, alunos: 0, atividades: [] };
-            } catch (erro) {
-                if (erro.code !== "ER_DUP_ENTRY" || tentativa === 2) throw erro;
-            }
+        let disciplinaId;
+        if (disciplinas.length > 0) {
+            disciplinaId = disciplinas[0].id;
+        } else {
+            const [novaDisciplina] = await conexao.execute(
+                "INSERT INTO disciplinas (nome) VALUES (?)", [disciplina]
+            );
+            disciplinaId = novaDisciplina.insertId;
         }
+
+        const codigo = randomBytes(4).toString("hex").toUpperCase();
+        const [turma] = await conexao.execute(
+            "INSERT INTO turmas (nome, codigo, disciplina_id, professor_id) VALUES (?, ?, ?, ?)",
+            [nome, codigo, disciplinaId, professorId]
+        );
+        await conexao.commit();
+        return { id: turma.insertId, nome, disciplina, codigo, alunos: 0, atividades: [] };
     } catch (erro) {
         await conexao.rollback();
         throw erro;

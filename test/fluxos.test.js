@@ -2,6 +2,7 @@ const { test } = require("node:test");
 const assert = require("node:assert/strict");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const express = require("express");
 const db = require("../db");
 
 process.env.JWT_SECRET = "segredo-exclusivo-para-testes-locais";
@@ -11,8 +12,8 @@ process.env.NODE_ENV = "test";
 test("sessão, admin, turmas e atividades pela API HTTP", async contexto => {
     const senha = await bcrypt.hash("senha-de-teste", 4);
     const usuarios = [
-        { id: 1, nome: "Prof", email: "prof@teste.com", senha, perfil: "professor", admin: 1 },
-        { id: 2, nome: "Aluno", email: "aluno@teste.com", senha, perfil: "aluno", admin: 0 }
+        { id: 1, nome: "Prof", email: "prof@teste.com", senha, perfil: "admin" },
+        { id: 2, nome: "Aluno", email: "aluno@teste.com", senha, perfil: "aluno" }
     ];
     const turmas = [];
     const atividades = [];
@@ -38,7 +39,13 @@ test("sessão, admin, turmas e atividades pela API HTTP", async contexto => {
     contexto.mock.method(db, "buscarAtividadesAluno", async aluno =>
         atividades.filter(a => matriculas.some(m => m.aluno === aluno && m.turma === a.turma_id)));
 
-    const servidor = require("../server").listen(0, "127.0.0.1");
+    const iniciarServidor = express.application.listen;
+    let servidor;
+    contexto.mock.method(express.application, "listen", function () {
+        servidor = iniciarServidor.call(this, 0, "127.0.0.1");
+        return servidor;
+    });
+    require("../server");
     contexto.after(() => servidor.close());
     await new Promise(resolve => servidor.once("listening", resolve));
     const base = `http://127.0.0.1:${servidor.address().port}`;
@@ -76,9 +83,9 @@ test("sessão, admin, turmas e atividades pela API HTTP", async contexto => {
     await status(200, "/adm.html", undefined, prof);
     const sessao = await status(200, "/api/logado", undefined, prof);
     assert.deepEqual((await sessao.json()).usuario, {
-        id: 1, nome: "Prof", email: usuarios[0].email, perfil: "professor", admin: true
+        id: 1, nome: "Prof", email: usuarios[0].email, perfil: "admin"
     });
-    usuarios[0].admin = 0;
+    usuarios[0].perfil = "professor";
     await status(403, "/api/admin/turmas", undefined, prof);
     await status(201, "/api/professor/turmas", { nome: "2º ano B", disciplina: "Física" }, prof);
     const atividade = { turmaId: 1, titulo: "Lista 5", tipo: "atividade", data: "2026-12-01" };
