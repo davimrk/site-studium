@@ -80,7 +80,7 @@ async function matricularAluno(turmaId, alunoId) {
 
 async function buscarAtividadesAluno(alunoId) {
     const [resultado] = await db.query(
-        `select atividades.id, atividades.titulo, atividades.descricao, atividades.tipo, atividades.data_entrega, turmas.nome as turma from atividades
+        `select atividades.id, atividades.turma_id, atividades.titulo, atividades.descricao, atividades.tipo, atividades.data_entrega, turmas.nome as turma from atividades
          inner join turmas on atividades.turma_id = turmas.id
          inner join turma_alunos on turmas.id = turma_alunos.turma_id
          where turma_alunos.aluno_id = ?
@@ -166,16 +166,22 @@ async function criarTurma(professorId, nome, disciplina) {
     }
 }
 
-async function criarAtividade(professorId, turmaId, { titulo, tipo, data }) {
+async function criarAtividade(professorId, turmaId, { titulo, tipo, data, descricao }) {
     const [resultado] = await db.execute(
         `INSERT INTO atividades (turma_id, titulo, descricao, tipo, data_entrega)
-         SELECT id, ?, '', ?, ? FROM turmas WHERE id = ? AND professor_id = ?`,
-        [titulo, tipo, data, turmaId, professorId]
+         SELECT id, ?, ?, ?, ? FROM turmas WHERE id = ? AND professor_id = ?`,
+        [titulo, descricao || "", tipo, data, turmaId, professorId]
     );
     return resultado.affectedRows ? resultado.insertId : null;
 }
 
+async function consultar(sql, valores) {
+    const [dados] = await db.execute(sql, valores);
+    return dados;
+}
+
 module.exports = {
+    consultar,
     cadastrarUsuario,
     buscarUsuarioEmail,
     buscarUsuarioId,

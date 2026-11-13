@@ -39,6 +39,26 @@ test("sessão, admin, turmas e atividades pela API HTTP", async contexto => {
     contexto.mock.method(db, "buscarAtividadesAluno", async aluno =>
         atividades.filter(a => matriculas.some(m => m.aluno === aluno && m.turma === a.turma_id)));
 
+    const entregas = [];
+    contexto.mock.method(db, "consultar", async (sql, valores) => {
+        if (sql.includes("FROM turmas t JOIN")) {
+            return turmas.filter(t => t.id === Number(valores[0])).map(t => ({ ...t, professor_id: t.professor }));
+        }
+        if (sql.includes("FROM atividades WHERE id")) {
+            return atividades.filter(a => a.id === Number(valores[0]) && a.turma_id === valores[1]);
+        }
+        if (sql.startsWith("INSERT INTO entregas")) {
+            if (entregas.length) throw Object.assign(new Error(), { code: "ER_DUP_ENTRY" });
+            entregas.push({ id: 1, resposta: valores[2], nota: null });
+            return { affectedRows: 1 };
+        }
+        if (sql.startsWith("UPDATE entregas")) {
+            entregas[0].nota = valores[0];
+            return { affectedRows: 1 };
+        }
+        if (sql.includes("FROM entregas")) return entregas;
+        return [];
+    });
     const iniciarServidor = express.application.listen;
     let servidor;
     contexto.mock.method(express.application, "listen", function () {
@@ -108,10 +128,23 @@ test("sessão, admin, turmas e atividades pela API HTTP", async contexto => {
     assert.equal((await painel.json())[0].atividades[0].titulo, atividade.titulo);
     const antes = await status(200, "/api/minhas-atividades", undefined, aluno);
     assert.deepEqual(await antes.json(), []);
+    const rotaAtividade = "/api/turmas/1/atividades/1";
+    await status(404, rotaAtividade, undefined, aluno);
     await status(201, "/api/turmas/entrar", { codigo: "abc123" }, aluno);
     await status(409, "/api/turmas/entrar", { codigo: "ABC123" }, aluno);
     const depois = await status(200, "/api/minhas-atividades", undefined, aluno);
     assert.equal((await depois.json())[0].titulo, atividade.titulo);
+    await status(200, "/turma.html");
+    await status(200, "/atividade.html");
+    await status(200, "/api/turmas/1", undefined, aluno);
+    await status(200, rotaAtividade, undefined, aluno);
+    await status(403, rotaAtividade + "/nota", { entregaId: 1, nota: 9 }, aluno);
+    await status(201, rotaAtividade + "/entrega", { resposta: "Minha resposta" }, aluno);
+    await status(409, rotaAtividade + "/entrega", { resposta: "Outra resposta" }, aluno);
+    await status(400, rotaAtividade + "/nota", { entregaId: 1, nota: 11 }, prof);
+    await status(200, rotaAtividade + "/nota", { entregaId: 1, nota: 9 }, prof);
+    const corrigida = await status(200, rotaAtividade, undefined, aluno);
+    assert.equal((await corrigida.json()).entrega.nota, 9);
     const logout = await status(200, "/api/auth/logout", {}, aluno);
     assert.match(logout.headers.get("set-cookie"), /^token=;/);
 });

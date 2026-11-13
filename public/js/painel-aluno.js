@@ -36,7 +36,8 @@ async function carregarTurmas() {
 
         turmas.forEach(function(turma) {
             const card = document.createElement("div");
-            const nome = document.createElement("h3");
+            const nome = document.createElement("a");
+            nome.href = "/turma.html?id=" + turma.id;
             const disciplina = document.createElement("p");
 
             nome.textContent = turma.nome;
@@ -68,7 +69,8 @@ async function carregarAtividades() {
 
         atividades.forEach(function(atividade) {
             const card = document.createElement("div");
-            const titulo = document.createElement("h3");
+            const titulo = document.createElement("a");
+            titulo.href = "/atividade.html?turma=" + atividade.turma_id + "&id=" + atividade.id;
             const turma = document.createElement("p");
             const tipo = document.createElement("p");
 
@@ -134,7 +136,7 @@ formulario.addEventListener("submit", async function(evento) {
 
         if (resposta.ok) {
             mensagem.textContent = "Você entrou na turma com sucesso!";
-            formulario.reset();
+            window.location.href = "/turma.html?id=" + dados.turma.id;
         } else {
             mensagem.textContent = dados.mensagem;
         }

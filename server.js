@@ -22,7 +22,8 @@ const {
     listarTurmasProfessor,
     listarAtividadesProfessor,
     criarTurma,
-    criarAtividade
+    criarAtividade,
+    consultar
 } = require("./db.js");
 
 const app = express();
@@ -253,9 +254,10 @@ app.post("/api/professor/turmas", verificarToken, somenteProfessor, async (req, 
 });
 
 app.post("/api/atividades", verificarToken, somenteProfessor, async (req, res) => {
-    const { turmaId, titulo, tipo, data } = req.body ?? {};
+    const { turmaId, titulo, tipo, data, descricao = "" } = req.body ?? {};
     if (!Number.isSafeInteger(turmaId) || turmaId < 1 ||
-        typeof titulo !== "string" || !titulo.trim() || titulo.trim().length > 80 ||
+        typeof titulo !== "string" || !titulo.trim() || titulo.trim().length > 150 ||
+        typeof descricao !== "string" || descricao.length > 5000 ||
         (tipo !== "atividade" && tipo !== "prova")) {
         return res.status(400).json({ mensagem: "Informe uma turma, um título válido e o tipo." });
     }
@@ -269,12 +271,129 @@ app.post("/api/atividades", verificarToken, somenteProfessor, async (req, res) =
         }
     }
 
-    const atividade = { titulo: titulo.trim(), tipo, data: data || null };
+    const atividade = { titulo: titulo.trim(), tipo, data: data || null, descricao: descricao.trim() };
     const id = await criarAtividade(req.usuario.id, turmaId, atividade);
     if (!id) {
         return res.status(404).json({ mensagem: "Turma não encontrada." });
     }
     res.status(201).json({ id, ...atividade });
+});
+
+async function abrirTurma(req, res, next) {
+    const [turma] = await consultar(
+        `SELECT t.id, t.nome, t.codigo, t.professor_id, d.nome AS disciplina
+         FROM turmas t JOIN disciplinas d ON d.id = t.disciplina_id WHERE t.id = ?`,
+        [req.params.turma]
+    );
+
+    if (turma && req.usuario.perfil === "professor" && turma.professor_id === req.usuario.id) {
+        req.turma = turma;
+        return next();
+    }
+
+    if (turma && req.usuario.perfil === "aluno" && await verificarMatricula(turma.id, req.usuario.id)) {
+        req.turma = turma;
+        return next();
+    }
+
+    res.status(404).json({ mensagem: "Turma não encontrada." });
+}
+
+app.get("/api/turmas/:turma", verificarToken, abrirTurma, async (req, res) => {
+    const id = req.turma.id;
+    const atividades = await consultar(
+        "SELECT id, titulo, tipo FROM atividades WHERE turma_id = ? ORDER BY data_entrega, id", [id]
+    );
+    const materiais = await consultar("SELECT titulo, descricao, arquivo FROM materiais WHERE turma_id = ?", [id]);
+    const avisos = await consultar("SELECT titulo, mensagem FROM avisos WHERE turma_id = ? ORDER BY id DESC", [id]);
+    const professor = req.usuario.perfil === "professor";
+    const alunos = professor ? await consultar(
+        `SELECT u.nome FROM usuarios u JOIN turma_alunos m ON m.aluno_id = u.id
+         WHERE m.turma_id = ? ORDER BY u.nome`, [id]
+    ) : [];
+
+    res.json({ turma: req.turma, atividades, materiais, avisos, alunos, professor });
+});
+
+app.post("/api/turmas/:turma/publicacoes", verificarToken, somenteProfessor, abrirTurma, async (req, res) => {
+    const { tipo, titulo, texto, arquivo = "" } = req.body ?? {};
+    if (typeof titulo !== "string" || !titulo.trim() || titulo.length > 150 ||
+        typeof texto !== "string" || !texto.trim() || texto.length > 5000) {
+        return res.status(400).json({ mensagem: "Preencha o título e o texto." });
+    }
+    if (tipo === "material") {
+        if (typeof arquivo !== "string" || arquivo.length > 255 || (arquivo && !/^https?:\/\//i.test(arquivo))) {
+            return res.status(400).json({ mensagem: "Use um link iniciado por http:// ou https://." });
+        }
+        await consultar("INSERT INTO materiais (turma_id, titulo, descricao, arquivo) VALUES (?, ?, ?, ?)",
+            [req.turma.id, titulo.trim(), texto.trim(), arquivo || null]);
+    } else if (tipo === "aviso") {
+        await consultar("INSERT INTO avisos (turma_id, titulo, mensagem) VALUES (?, ?, ?)",
+            [req.turma.id, titulo.trim(), texto.trim()]);
+    } else {
+        return res.status(400).json({ mensagem: "Escolha material ou aviso." });
+    }
+    res.status(201).json({ mensagem: "Publicação criada." });
+});
+
+async function abrirAtividade(req, res, next) {
+    const [atividade] = await consultar(
+        `SELECT id, turma_id, titulo, tipo, descricao, DATE_FORMAT(data_entrega, '%d/%m/%Y') AS prazo
+         FROM atividades WHERE id = ? AND turma_id = ?`, [req.params.atividade, req.turma.id]
+    );
+    if (!atividade) return res.status(404).json({ mensagem: "Atividade não encontrada." });
+    req.atividade = atividade;
+    next();
+}
+
+const rotaAtividade = "/api/turmas/:turma/atividades/:atividade";
+
+app.get(rotaAtividade, verificarToken, abrirTurma, abrirAtividade, async (req, res) => {
+    const professor = req.usuario.perfil === "professor";
+    if (professor) {
+        const entregas = await consultar(
+            `SELECT e.id, u.nome, e.resposta, e.nota FROM entregas e
+             JOIN usuarios u ON u.id = e.aluno_id WHERE e.atividade_id = ? ORDER BY u.nome`, [req.atividade.id]
+        );
+        return res.json({ atividade: req.atividade, professor, entregas });
+    }
+
+    const [entrega] = await consultar(
+        "SELECT resposta, nota FROM entregas WHERE atividade_id = ? AND aluno_id = ?",
+        [req.atividade.id, req.usuario.id]
+    );
+    res.json({ atividade: req.atividade, professor, entrega });
+});
+
+app.post(rotaAtividade + "/entrega", verificarToken, somenteAluno, abrirTurma, abrirAtividade, async (req, res) => {
+    const resposta = req.body?.resposta;
+    if (typeof resposta !== "string" || !resposta.trim() || resposta.length > 10000) {
+        return res.status(400).json({ mensagem: "Escreva uma resposta de até 10 mil caracteres." });
+    }
+
+    try {
+        await consultar("INSERT INTO entregas (atividade_id, aluno_id, resposta) VALUES (?, ?, ?)",
+            [req.atividade.id, req.usuario.id, resposta.trim()]);
+    } catch (erro) {
+        if (erro.code === "ER_DUP_ENTRY") {
+            return res.status(409).json({ mensagem: "Você já enviou esta atividade." });
+        }
+        throw erro;
+    }
+
+    res.status(201).json({ mensagem: "Resposta enviada." });
+});
+
+app.post(rotaAtividade + "/nota", verificarToken, somenteProfessor, abrirTurma, abrirAtividade, async (req, res) => {
+    const { entregaId, nota } = req.body ?? {};
+    if (!Number.isInteger(entregaId) || entregaId < 1 || !Number.isFinite(nota) || nota < 0 || nota > 10) {
+        return res.status(400).json({ mensagem: "Informe uma nota de 0 a 10." });
+    }
+
+    const resultado = await consultar("UPDATE entregas SET nota = ? WHERE id = ? AND atividade_id = ?",
+        [nota, entregaId, req.atividade.id]);
+    if (!resultado.affectedRows) return res.status(404).json({ mensagem: "Entrega não encontrada." });
+    res.json({ mensagem: "Nota salva." });
 });
 
 app.get("/api/admin/turmas", verificarToken, somenteAdmin, async (req, res) => {

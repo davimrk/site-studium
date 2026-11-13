@@ -1,0 +1,41 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap");
+
+.pagina-turma {
+  max-width: 900px;
+  margin: 24px auto;
+  padding: 0 16px;
+}
+
+.pagina-turma .bloco {
+  margin-top: 16px;
+}
+
+.pagina-turma a {
+  color: var(--darkred);
+}
+
+.pagina-turma textarea {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #bbb;
+  border-radius: 8px;
+  font: inherit;
+  resize: vertical;
+}
+
+.pagina-turma .texto {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.pagina-turma article {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #ddd;
+}
+
+.pagina-turma .bloco[hidden],
+.pagina-turma form[hidden] {
+  display: none;
+}

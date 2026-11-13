@@ -32,10 +32,15 @@ function atualizarPainel() {
         alunos += Number(turma.alunos);
         atividades += turma.atividades.length;
         seletorTurma.add(new Option(`${turma.nome} - ${turma.disciplina}`, turma.id));
-        listaTurmas.append(item("item-turma", turma.nome, [
+        const card = item("item-turma", turma.nome, [
             `Código: ${turma.codigo}`,
             `${turma.alunos} alunos • ${turma.atividades.length} atividades`
-        ]));
+        ]);
+        const link = document.createElement("a");
+        link.href = "/turma.html?id=" + turma.id;
+        link.textContent = "Abrir turma";
+        card.append(link);
+        listaTurmas.append(card);
         for (const atividade of turma.atividades) {
             listaAtividades.append(item("item-ativ", atividade.titulo, [
                 [turma.nome, atividade.tipo, atividade.data].filter(Boolean).join(" • ")

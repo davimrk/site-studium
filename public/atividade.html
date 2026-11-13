@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Atividade — Studium</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/painel.css">
+  <link rel="stylesheet" href="/css/navegacao.css">
+  <link rel="stylesheet" href="/css/turma.css">
+  <script src="/js/atividade.js" defer></script>
+</head>
+<body>
+  <header class="nav-studium">
+    <a class="nav-card nav-marca" href="/" aria-label="Studium, painel">
+      <img src="/img/STUDIUM%20(150%20x%20100%20px).svg" alt="Studium">
+    </a>
+    <nav class="nav-card nav-links" aria-label="Navegação principal">
+      <a href="/">Meu painel</a>
+      <a href="" aria-current="page">Atividade</a>
+    </nav>
+  </header>
+  <main class="pagina-turma">
+    <p id="mensagem" role="status"></p>
+    <div id="conteudo" hidden>
+      <a id="voltar">Voltar para a turma</a>
+      <h1 id="titulo">Atividade</h1>
+      <p id="detalhes"></p>
+      <section class="bloco"><h2>Enunciado</h2><p id="descricao" class="texto"></p></section>
+      <section class="bloco" id="area-entrega" hidden>
+        <h2>Sua resposta</h2>
+        <p id="resposta-enviada" class="texto"></p>
+        <p id="nota"></p>
+        <form id="form-entrega" class="formpainel" hidden>
+          <label for="resposta">Escreva sua resposta</label>
+          <textarea id="resposta" rows="6" maxlength="10000" required></textarea>
+          <button class="btn btn1" type="submit">Enviar resposta</button>
+        </form>
+      </section>
+      <section class="bloco" id="area-correcao" hidden>
+        <h2>Entregas</h2>
+        <div id="entregas"></div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>
