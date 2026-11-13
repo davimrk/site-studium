@@ -1,0 +1,179 @@
+@font-face {
+  font-family: "Insignia";
+  src: url("/fonts/Insignia.ttf") format("truetype");
+  font-display: swap;
+}
+
+html {
+  scroll-padding-top: 88px;
+}
+
+.nav-studium {
+  --nav-vinho: #870504;
+  --nav-destaque: #b32231;
+  --nav-claro: #f5f2eb;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  display: grid;
+  grid-template-columns: minmax(max-content, 1fr) auto minmax(max-content, 1fr);
+  align-items: center;
+  gap: 8px clamp(10px, 1.5vw, 24px);
+  padding: 8px clamp(10px, 2vw, 32px);
+  background: #f5f5f5;
+  box-shadow: 0 2px 10px #87050420;
+  font-family: "Insignia", sans-serif;
+}
+
+.nav-studium .nav-card {
+  min-height: 46px;
+  border-radius: 999px;
+  background: var(--nav-vinho);
+  color: var(--nav-claro);
+}
+
+.nav-studium a {
+  text-decoration: none;
+}
+
+.nav-studium .nav-marca {
+  justify-self: start;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 16px 4px 5px;
+  font-size: 1.4rem;
+}
+
+.nav-simbolo {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--nav-destaque);
+}
+
+.nav-simbolo img {
+  display: block;
+  width: 29px;
+  height: 29px;
+  object-fit: contain;
+}
+
+.nav-links,
+.nav-conta,
+.nav-acoes {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.nav-studium .nav-links {
+  padding: 4px;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.nav-studium .nav-links a,
+.nav-studium button {
+  border: 0;
+  border-radius: 999px;
+  padding: 9px 12px;
+  background: transparent;
+  color: var(--nav-claro);
+  font: inherit;
+  white-space: nowrap;
+}
+
+.nav-studium button {
+  cursor: pointer;
+}
+
+.nav-studium .nav-links a[aria-current="page"],
+.nav-studium .nav-links a:hover,
+.nav-studium button:hover {
+  background: var(--nav-destaque);
+  color: white;
+}
+
+.nav-studium :focus-visible {
+  outline: 2px solid var(--nav-claro);
+  outline-offset: -3px;
+}
+
+.nav-acoes {
+  justify-self: end;
+  gap: 8px;
+}
+
+.nav-conta {
+  padding: 4px;
+}
+
+.nav-conta span {
+  padding-inline: 10px 4px;
+  overflow-wrap: anywhere;
+  max-width: 180px;
+}
+
+.nav-studium .nav-primario {
+  background: var(--nav-claro);
+  color: var(--nav-vinho);
+}
+
+@media (max-width: 1050px) {
+  html {
+    scroll-padding-top: 148px;
+  }
+
+  .nav-studium {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .nav-studium .nav-links {
+    grid-row: 2;
+    grid-column: 1 / -1;
+    justify-self: center;
+    max-width: 100%;
+  }
+
+  .nav-acoes {
+    grid-column: 2;
+  }
+}
+
+@media (max-width: 540px) {
+  .nav-studium .nav-acoes {
+    max-width: min(52vw, 270px);
+  }
+
+  .nav-studium .nav-conta button {
+    padding-inline: 8px;
+  }
+
+  .nav-studium {
+    font-size: .86rem;
+  }
+
+  .nav-studium .nav-marca {
+    font-size: 1.1rem;
+    padding-right: 10px;
+    gap: 5px;
+  }
+
+  .nav-studium .nav-links {
+    justify-self: stretch;
+  }
+
+  .nav-acoes {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .nav-studium .nav-admin {
+    min-height: 0;
+    padding: 4px 9px;
+  }
+}

@@ -11,19 +11,27 @@
       href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap"
       rel="stylesheet" />
  
-    <link rel="stylesheet" href="style.css" />
-    <link rel="stylesheet" href="painel.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/painel.css" />
+      <link rel="stylesheet" href="/css/navegacao.css" />
   </head>
   <body>
-    <header class="barra">
-      <a class="logo" href="index.html" aria-label="Studium, início"><img src="img/STUDIUM (150 x 100 px).svg" alt="Studium" /></a>
-      <nav class="menu" id="menu">
-        <a href="index.html">Início</a>
-        <a href="#ia">Studium AI</a>
+    <header class="nav-studium">
+      <a class="nav-card nav-marca" href="/index.html" aria-label="Studium, início">
+        <span class="nav-simbolo"><img src="/img/pombo%20branco.png" alt="" /></span>
+        <span>Studium</span>
+      </a>
+      <nav class="nav-card nav-links" id="menu" aria-label="Navegação principal">
+        <a href="/index.html">Início</a>
+        <a href="/materia.html" aria-current="page">Matéria</a>
+        <a href="/aluno.html">Painel do aluno</a>
+        <a href="/index.html#ia">Studium AI</a>
       </nav>
-      <div class="usuario">
-        <h4>Olá, <strong id="nomeuser">Rodrigo!</strong></h4>
-        <button class="btn btn2" id="btnsair">Sair</button>
+      <div class="nav-acoes">
+        <div class="nav-card nav-conta">
+          <span>Olá, <strong id="nomeuser">Rodrigo!</strong></span>
+          <button type="button" class="nav-primario" id="btnsair">Sair</button>
+        </div>
       </div>
     </header>
  
