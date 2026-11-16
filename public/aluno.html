@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Meu painel — Studium</title>
- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -13,7 +12,8 @@
  
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="stylesheet" href="/css/painel.css" />
-      <link rel="stylesheet" href="/css/navegacao.css" />
+    <link rel="stylesheet" href="/css/navegacao.css" />
+    <link rel="stylesheet" href="/css/aluno.css" />
   </head>
   <body>
     <header class="nav-studium">
@@ -21,87 +21,50 @@
         <img src="/img/STUDIUM%20(150%20x%20100%20px).svg" alt="Studium" />
       </a>
       <nav class="nav-card nav-links" id="menu" aria-label="Navegação principal">
-        <a href="/index.html">Início</a>
         <a href="/aluno.html" aria-current="page">Painel do aluno</a>
-        <a href="/index.html#ia">Studium AI</a>
+        <a href="#atividades">Atividades</a>
+        <a href="#turmas">Turmas</a>
       </nav>
       <div class="nav-acoes">
         <div class="nav-card nav-conta">
-          <span>Olá, <strong id="nomeuser"></strong></span>
           <button type="button" class="nav-primario" id="btnsair">Sair</button>
         </div>
       </div>
     </header>
  
-    <div class="topopainel">
-      <span class="tag">seu painel</span>
-      <h1>O que você precisa fazer</h1>
-      <p>Suas turmas e as próximas entregas, tudo num lugar só.</p>
-    </div>
-    <main id="painel">
- 
-      <div class="gradepainel">
+    <main class="painel-aluno">
+      <section class="boas-vindas" aria-labelledby="saudacao">
         <div>
-          <section class="bloco">
-            <h2>Próximas atividades</h2>
-           <div id="minhasAtividades"></div>
+          <h1 id="saudacao">Olá<span id="nomeuser"></span>!</h1>
+          <p>Veja suas atividades e acompanhe suas turmas.</p>
+        </div>
+        <img src="/img/pombo%20branco.png" alt="" />
+      </section>
+
+      <div class="colunas-aluno">
+        <section class="secao-aluno" id="atividades">
+          <h2>Atividades e provas</h2>
+          <div id="minhasAtividades" aria-live="polite">Carregando atividades…</div>
+        </section>
+
+        <aside class="lateral-aluno">
+          <section class="secao-aluno" id="turmas">
+            <h2>Minhas turmas</h2>
+            <div id="minhasTurmas" aria-live="polite">Carregando turmas…</div>
           </section>
-        </div>
 
-        <div class="painelmeio">
-          <section class="bloco">
-            <h2>Matérias</h2>
-            <div class="listamaterias" id="listamaterias">
-
-  <div class="materia-card">
-    <div class="materia-topo">
-      <i class="fa-solid fa-calculator"></i>
-      <h3>Matemática</h3>
-    </div>
-
-    <div class="materia-baixo">
-      <span>2º Reg 2</span>
-      <span class="seta">›</span>
-    </div>
-  </div>
-
-  <div class="materia-card">
-    <div class="materia-topo">
-      <i class="fa-solid fa-atom"></i>
-      <h3>Física</h3>
-    </div>
-
-    <div class="materia-baixo">
-      <span>2º Reg 2</span>
-      <span class="seta">›</span>
-    </div>
-  </div>
-
-</div>
+          <section class="secao-aluno entrar-turma">
+            <h2>Entrar em uma turma</h2>
+            <form class="formpainel" id="formentrar">
+              <label for="codigo">Código da turma</label>
+              <input id="codigo" type="text" placeholder="Ex.: STU123" maxlength="8" required />
+              <button type="submit" class="btn btn1">Entrar na turma</button>
+            </form>
+            <p class="aviso" id="msgentrar" role="status"></p>
           </section>
-        </div>
- 
-       <div class="paineldireita">
-    <section class="bloco">
-        <h2>Entrar em uma turma</h2>
-
-        <form class="formpainel" id="formentrar">
-            <input type="text" id="codigo" placeholder="Código da turma (ex: A1B2C3)" maxlength="8" required/>
-            <button type="submit" class="btn btn1">Entrar</button>
-        </form>
-        <p class="aviso" id="msgentrar"></p>
-    </section>
-</div>
- 
-          <section class="bloco">
-    <h2>Minhas turmas</h2>
-    <div id="minhasTurmas"></div>
-</section>
-        </div>
+        </aside>
       </div>
     </main>
- 
     <script src="/js/painel-aluno.js"></script>
   </body>
 </html>
- 

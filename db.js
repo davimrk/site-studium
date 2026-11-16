@@ -80,11 +80,11 @@ async function matricularAluno(turmaId, alunoId) {
 
 async function buscarAtividadesAluno(alunoId) {
     const [resultado] = await db.query(
-        `select atividades.id, atividades.turma_id, atividades.titulo, atividades.descricao, atividades.tipo, atividades.data_entrega, turmas.nome as turma from atividades
+        `select atividades.id, atividades.turma_id, atividades.titulo, atividades.descricao, atividades.tipo, DATE_FORMAT(atividades.data_entrega, '%d/%m/%Y') AS prazo, turmas.nome as turma from atividades
          inner join turmas on atividades.turma_id = turmas.id
          inner join turma_alunos on turmas.id = turma_alunos.turma_id
          where turma_alunos.aluno_id = ?
-         order by atividades.data_entrega`,
+         order by atividades.data_entrega is null, atividades.data_entrega, atividades.id`,
         [alunoId]
     );
 

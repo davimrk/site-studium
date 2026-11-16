@@ -3,96 +3,66 @@ const mensagem = document.getElementById("msgentrar");
 const nomeUser = document.getElementById("nomeuser");
 const btnSair = document.getElementById("btnsair")
 
+async function buscar(url) {
+    const resposta = await fetch(url);
+    if (resposta.status === 401) {
+        window.location.href = "/";
+        throw new Error("Faça login para continuar.");
+    }
+    if (!resposta.ok) throw new Error("Não foi possível carregar os dados.");
+    return resposta.json();
+}
+
+function criarLinha(url, titulo, detalhes) {
+    const link = document.createElement("a");
+    const nome = document.createElement("strong");
+    const texto = document.createElement("span");
+    link.className = "linha-aluno";
+    link.href = url;
+    nome.textContent = titulo;
+    texto.textContent = detalhes;
+    link.append(nome, texto);
+    return link;
+}
+
+async function carregarLista(id, url, vazio, criarItem) {
+    const lista = document.getElementById(id);
+    try {
+        const itens = await buscar(url);
+        lista.replaceChildren();
+        if (!itens.length) lista.textContent = vazio;
+        for (const item of itens) lista.append(criarItem(item));
+    } catch (erro) {
+        lista.textContent = erro.message;
+    }
+}
+
 async function carregarAluno() {
+    let dados;
     try {
-        const resposta = await fetch("/api/logado");
-
-        if (!resposta.ok) {
-            window.location.href = "/index.html";
-            return;
-        }
-        const dados = await resposta.json();
-        nomeUser.textContent = dados.usuario.nome;
+        dados = await buscar("/api/logado");
     } catch (erro) {
-        console.log(erro);
-        window.location.href = "/index.html";
+        document.getElementById("minhasAtividades").textContent = erro.message;
+        document.getElementById("minhasTurmas").textContent = erro.message;
+        return;
     }
-}
 
-
-async function carregarTurmas() {
-    try {
-        const resposta = await fetch("/api/minhas-turmas");
-
-        if (!resposta.ok) {
-            console.log("Erro ao buscar turmas");
-            return;
-        }
-
-        const turmas = await resposta.json();
-        const lista = document.getElementById("minhasTurmas");
-
-        lista.innerHTML = "";
-
-        turmas.forEach(function(turma) {
-            const card = document.createElement("div");
-            const nome = document.createElement("a");
-            nome.href = "/turma.html?id=" + turma.id;
-            const disciplina = document.createElement("p");
-
-            nome.textContent = turma.nome;
-            disciplina.textContent = turma.disciplina;
-
-            card.appendChild(nome);
-            card.appendChild(disciplina);
-            lista.appendChild(card);
-        });
-
-    } catch (erro) {
-        console.log(erro);
+    if (dados.usuario.perfil !== "aluno") {
+        window.location.href = "/";
+        return;
     }
+
+    nomeUser.textContent = ", " + dados.usuario.nome;
+    carregarLista("minhasTurmas", "/api/minhas-turmas", "Você ainda não entrou em uma turma.", turma =>
+        criarLinha("/turma.html?id=" + turma.id, turma.nome, turma.disciplina)
+    );
+    carregarLista("minhasAtividades", "/api/minhas-atividades", "Nenhuma atividade publicada nas suas turmas.", atividade => {
+        const url = "/atividade.html?turma=" + atividade.turma_id + "&id=" + atividade.id;
+        const tipo = atividade.tipo === "prova" ? "Prova" : "Atividade";
+        const prazo = atividade.prazo ? "Até " + atividade.prazo : "Sem prazo";
+        return criarLinha(url, atividade.titulo, tipo + " · " + atividade.turma + " · " + prazo);
+    });
 }
-
-async function carregarAtividades() {
-    try {
-        const resposta = await fetch("/api/minhas-atividades");
-
-        if (!resposta.ok) {
-            console.log("Erro ao buscar atividades");
-            return;
-        }
-
-        const atividades = await resposta.json();
-        const lista = document.getElementById("minhasAtividades");
-
-        lista.innerHTML = "";
-
-        atividades.forEach(function(atividade) {
-            const card = document.createElement("div");
-            const titulo = document.createElement("a");
-            titulo.href = "/atividade.html?turma=" + atividade.turma_id + "&id=" + atividade.id;
-            const turma = document.createElement("p");
-            const tipo = document.createElement("p");
-
-            titulo.textContent = atividade.titulo;
-            turma.textContent = atividade.turma;
-            tipo.textContent = atividade.tipo;
-
-            card.appendChild(titulo);
-            card.appendChild(turma);
-            card.appendChild(tipo);
-
-            lista.appendChild(card);
-        });
-
-    } catch (erro) {
-        console.log(erro);
-    }
-}
-
-carregarTurmas();
-carregarAtividades();
-
 
 btnSair.addEventListener("click", async () => {
     try {
