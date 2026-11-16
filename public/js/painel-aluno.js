@@ -1,7 +1,6 @@
 const formulario = document.getElementById("formentrar");
 const mensagem = document.getElementById("msgentrar");
 const nomeUser = document.getElementById("nomeuser");
-const btnSair = document.getElementById("btnsair")
 
 async function buscar(url) {
     const resposta = await fetch(url);
@@ -63,25 +62,6 @@ async function carregarAluno() {
         return criarLinha(url, atividade.titulo, tipo + " · " + atividade.turma + " · " + prazo);
     });
 }
-
-btnSair.addEventListener("click", async () => {
-    try {
-        const resposta = await fetch("/api/auth/logout", {
-            method: "POST"
-        });
-
-        if (!resposta.ok) {
-            throw new Error("Não foi possível sair da conta");
-        }
-
-        window.location.href = "/index.html";
-
-    } catch (erro) {
-        console.error(erro);
-        alert("Erro ao sair da conta.");
-    }
-});
-
 
 formulario.addEventListener("submit", async function(evento) {
     evento.preventDefault();

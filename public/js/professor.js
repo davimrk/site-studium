@@ -106,15 +106,6 @@ enviar(formAtividade, document.getElementById("msgativ"), async () => {
     return "Atividade publicada!";
 });
 
-document.getElementById("btnsair").addEventListener("click", async () => {
-    try {
-        await consultar("/api/auth/logout", {});
-        window.location.href = "/index.html";
-    } catch (erro) {
-        alert(erro.message);
-    }
-});
-
 async function iniciar() {
     const botoes = [formTurma, formAtividade].map(form => form.querySelector('button[type="submit"]'));
     botoes.forEach(botao => { botao.disabled = true; });

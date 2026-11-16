@@ -4,11 +4,17 @@ const titulo = document.getElementById("titulo");
 const lista = document.getElementById("lista");
 const mensagem = document.getElementById("mensagem");
 
-document.querySelectorAll("[data-consulta]").forEach(botao => {
+const botoes = document.querySelectorAll("[data-consulta]");
+
+botoes.forEach(botao => {
     botao.addEventListener("click", async () => {
         const categoria = botao.dataset.consulta;
 
-        mensagem.textContent = "Consultando...";
+        for (const opcao of botoes) {
+            opcao.disabled = true;
+            opcao.setAttribute("aria-pressed", opcao === botao);
+        }
+        mensagem.textContent = "Consultando…";
         resultado.hidden = true;
         lista.innerHTML = "";
 
@@ -57,6 +63,10 @@ document.querySelectorAll("[data-consulta]").forEach(botao => {
 
         } catch (erro) {
             mensagem.textContent = erro.message;
+        } finally {
+            for (const opcao of botoes) opcao.disabled = false;
         }
     });
 });
+
+botoes[0].click();

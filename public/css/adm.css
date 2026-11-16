@@ -1,103 +1,80 @@
-
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap");
 
-:root {
-    --vermelho: #870504;
-    --fundo: #f5f5f5;
-    --branco: #ffffff;
-}
-
-* {
-    box-sizing: border-box;
-}
-
-body {
-    margin: 0;
-    background: var(--fundo);
-    font-family: "DM Sans", sans-serif;
-    color: #111;
-}
-
-header {
-    background: var(--vermelho);
-    color: var(--branco);
-    padding: 20px 6%;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-header h2 {
-    margin: 0;
-}
-
-main {
-    max-width: 900px;
-    margin: 60px auto;
+.painel-adm {
+    max-width: 1160px;
+    margin: 24px auto 56px;
     padding: 0 20px;
 }
 
-h1 {
-    margin-bottom: 8px;
+.abertura-adm {
+    background: var(--darkred);
+    color: var(--fundo2);
+    padding: clamp(24px, 5vw, 54px);
+    border-radius: 18px;
 }
 
-p {
-    color: #666;
+.abertura-adm h1 {
+    font-family: var(--arista);
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 1.1;
+    margin-bottom: 10px;
 }
 
-.botoes {
+.botoes-adm {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
-    margin: 30px 0;
+    gap: 8px;
+    margin: 24px 0 16px;
 }
 
-button {
-    background: var(--vermelho);
-    color: white;
-    border: none;
-    border-radius: 10px;
-    padding: 15px 25px;
+.botoes-adm button {
+    border: 1px solid var(--darkred);
+    border-radius: 999px;
+    padding: 8px 14px;
+    background: white;
+    color: var(--darkred);
     font: inherit;
-    font-weight: 600;
     cursor: pointer;
 }
 
-button:hover {
-    opacity: 0.85;
+.botoes-adm button:hover,
+.botoes-adm button[aria-pressed="true"] {
+    background: var(--darkred);
+    color: white;
 }
 
-#resultado {
+.botoes-adm button:disabled {
+    cursor: wait;
+}
+
+.painel-adm #resultado {
+    padding: 20px;
+    border: 1px solid #eaded4;
+    border-radius: 14px;
     background: white;
-    padding: 25px;
-    border-radius: 12px;
-    border: 1px solid #e5e5e5;
 }
 
-#resultado[hidden] {
-    display: none;
+.painel-adm h2 {
+    font-family: var(--arista);
+    color: var(--darkred);
+    margin-bottom: 12px;
 }
 
 .registro {
-    padding: 15px 0;
-    border-bottom: 1px solid #eee;
-}
-
-.registro:last-child {
-    border-bottom: none;
-}
-
-.registro strong {
-    display: block;
-    margin-bottom: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 4px 16px;
+    padding: 12px 0;
+    border-top: 1px solid #eaded4;
+    overflow-wrap: anywhere;
 }
 
 .registro span {
-    color: #666;
-    font-size: 14px;
+    color: #5b4b45;
 }
 
-#mensagem {
-    color: var(--vermelho);
+.painel-adm #mensagem {
+    margin-top: 12px;
+    color: var(--darkred);
 }
