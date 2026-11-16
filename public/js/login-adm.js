@@ -64,12 +64,6 @@ formAdmin.addEventListener("submit", async (e) => {
             return;
         }
 
-        if (dados.usuario.perfil !== "admin") {
-    mensagemAdmin.textContent = "Acesso não autorizado.";
-    mensagemAdmin.style.color = "red";
-    return;
-}
-
         mensagemAdmin.textContent = "Acesso autorizado!";
         mensagemAdmin.style.color = "green";
 

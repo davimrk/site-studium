@@ -22,20 +22,25 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
+      <link rel="stylesheet" href="/css/navegacao.css" />
   </head>
   <body>
-    <header class="barra" id="topo">
-      <a class="logo" href="#topo" aria-label="Studium, início"><img src="img/STUDIUM (150 x 100 px).svg" alt="Studium" /></a>
-      <nav id="menu">
-        <a href="#ia">Studium AI</a>
-        <a href="#comofunciona">Como funciona</a>
-        <a href="#professor">Para professores</a>
+    <header class="nav-studium" id="topo">
+      <a class="nav-card nav-marca" href="/index.html" aria-label="Studium, início">
+        <img src="/img/STUDIUM%20(150%20x%20100%20px).svg" alt="Studium" />
+      </a>
+      <nav class="nav-card nav-links" id="menu" aria-label="Navegação principal">
+        <a href="/index.html" aria-current="page">Início</a>
+        <a href="/index.html#ia">Studium AI</a>
+        <a href="/index.html#comofunciona">Como funciona</a>
+        <a href="/index.html#professor">Para professores</a>
       </nav>
-
-      <div class="btopo">
-        <button class="btn btn2" id="btnentrar">Entrar</button>
-        <button class="btn btn1" id="btncriar">Criar conta</button>
-        <button id="entrarAdmin">Área administrativa</button>
+      <div class="nav-acoes">
+        <div class="nav-card nav-conta" role="group" aria-label="Conta Studium">
+          <button type="button" id="btnentrar">Entrar</button>
+          <button type="button" class="nav-primario" id="btncriar">Criar conta</button>
+        </div>
+        <button type="button" class="nav-card nav-admin" id="entrarAdmin">Área administrativa</button>
       </div>
     </header>
     <main>
@@ -542,7 +547,6 @@
     <script src="/js/login-adm.js"></script>
     <script src="/js/modal.js"></script>
     <script src="/js/animacoes.js"></script>
-    <script src="/js/script.js"></script>
     <script>
       AOS.init({
         duration: 700,

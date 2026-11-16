@@ -4,11 +4,17 @@ const titulo = document.getElementById("titulo");
 const lista = document.getElementById("lista");
 const mensagem = document.getElementById("mensagem");
 
-document.querySelectorAll("[data-consulta]").forEach(botao => {
+const botoes = document.querySelectorAll("[data-consulta]");
+
+botoes.forEach(botao => {
     botao.addEventListener("click", async () => {
         const categoria = botao.dataset.consulta;
 
-        mensagem.textContent = "Consultando...";
+        for (const opcao of botoes) {
+            opcao.disabled = true;
+            opcao.setAttribute("aria-pressed", opcao === botao);
+        }
+        mensagem.textContent = "Consultando…";
         resultado.hidden = true;
         lista.innerHTML = "";
 
@@ -26,8 +32,7 @@ document.querySelectorAll("[data-consulta]").forEach(botao => {
 
             const dados = await resposta.json();
 
-            titulo.textContent =
-                categoria.charAt(0).toUpperCase() + categoria.slice(1);
+            titulo.textContent = botao.textContent;
 
             if (dados.length === 0) {
                 lista.textContent = "Nenhum registro encontrado.";
@@ -44,6 +49,11 @@ document.querySelectorAll("[data-consulta]").forEach(botao => {
 
                 if (categoria === "turmas") {
                     detalhe.textContent = `Código: ${item.codigo}`;
+                } else if (categoria === "disciplinas") {
+                    detalhe.textContent = "Turmas: " + item.total_turmas;
+                } else if (categoria === "atividades") {
+                    const tipo = item.tipo === "prova" ? "Prova" : "Atividade";
+                    detalhe.textContent = tipo + " · " + item.turma + " · " + (item.prazo || "Sem prazo");
                 } else {
                     detalhe.textContent = item.email;
                 }
@@ -57,6 +67,10 @@ document.querySelectorAll("[data-consulta]").forEach(botao => {
 
         } catch (erro) {
             mensagem.textContent = erro.message;
+        } finally {
+            for (const opcao of botoes) opcao.disabled = false;
         }
     });
 });
+
+botoes[0].click();
