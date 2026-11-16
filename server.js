@@ -421,6 +421,28 @@ app.get("/api/admin/alunos", verificarToken, somenteAdmin, async (req, res) => {
     }
 });
 
+app.get("/api/admin/disciplinas", verificarToken, somenteAdmin, async (req, res) => {
+    const disciplinas = await consultar(
+        `SELECT d.id, d.nome, COUNT(t.id) AS total_turmas
+         FROM disciplinas d
+         LEFT JOIN turmas t ON t.disciplina_id = d.id
+         GROUP BY d.id, d.nome
+         ORDER BY d.nome, d.id`, []
+    );
+    res.json(disciplinas);
+});
+
+app.get("/api/admin/atividades", verificarToken, somenteAdmin, async (req, res) => {
+    const atividades = await consultar(
+        `SELECT a.id, a.titulo AS nome, a.tipo, t.nome AS turma,
+                DATE_FORMAT(a.data_entrega, '%d/%m/%Y') AS prazo
+         FROM atividades a
+         JOIN turmas t ON t.id = a.turma_id
+         ORDER BY a.data_entrega IS NULL, a.data_entrega, a.id`, []
+    );
+    res.json(atividades);
+});
+
 app.get("/adm.html", verificarToken, somenteAdmin, (req, res) => {
     res.sendFile(path.join(__dirname, "privado", "adm.html"));
 });

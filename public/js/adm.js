@@ -32,8 +32,7 @@ botoes.forEach(botao => {
 
             const dados = await resposta.json();
 
-            titulo.textContent =
-                categoria.charAt(0).toUpperCase() + categoria.slice(1);
+            titulo.textContent = botao.textContent;
 
             if (dados.length === 0) {
                 lista.textContent = "Nenhum registro encontrado.";
@@ -50,6 +49,11 @@ botoes.forEach(botao => {
 
                 if (categoria === "turmas") {
                     detalhe.textContent = `Código: ${item.codigo}`;
+                } else if (categoria === "disciplinas") {
+                    detalhe.textContent = "Turmas: " + item.total_turmas;
+                } else if (categoria === "atividades") {
+                    const tipo = item.tipo === "prova" ? "Prova" : "Atividade";
+                    detalhe.textContent = tipo + " · " + item.turma + " · " + (item.prazo || "Sem prazo");
                 } else {
                     detalhe.textContent = item.email;
                 }

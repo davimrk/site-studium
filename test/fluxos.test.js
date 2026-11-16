@@ -115,6 +115,13 @@ test("sessão, admin, turmas e atividades pela API HTTP", async contexto => {
     assert.deepEqual((await sessao.json()).usuario, {
         id: 1, nome: "Prof", email: usuarios[0].email, perfil: "admin"
     });
+    for (const categoria of ["disciplinas", "atividades"]) {
+        const rota = "/api/admin/" + categoria;
+        await status(401, rota);
+        await status(403, rota, undefined, aluno);
+        const consulta = await status(200, rota, undefined, prof);
+        assert.ok(Array.isArray(await consulta.json()));
+    }
     usuarios[0].perfil = "professor";
     const homeProfessor = await status(302, "/index.html", undefined, prof);
     assert.equal(homeProfessor.headers.get("location"), "/professor.html");
