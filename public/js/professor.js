@@ -2,126 +2,208 @@ const nomeUser = document.getElementById("nomeuser");
 const seletorTurma = document.getElementById("selturma");
 const formTurma = document.getElementById("formturma");
 const formAtividade = document.getElementById("formativ");
+
+const botaoTurma = formTurma.querySelector('button[type="submit"]');
+const botaoAtividade = formAtividade.querySelector('button[type="submit"]');
+const avisoTurma = document.getElementById("msgturma");
+const avisoAtividade = document.getElementById("msgativ");
+
 let turmas = [];
 
-function item(classe, titulo, detalhes) {
-    const elemento = document.createElement("div");
-    elemento.className = classe;
-    const nome = document.createElement("strong");
-    nome.textContent = titulo;
-    elemento.append(nome);
-    for (const detalhe of detalhes) {
-        const linha = document.createElement("span");
-        linha.textContent = detalhe;
-        elemento.append(linha);
-    }
-    return elemento;
+function criarCard(classe, titulo, detalhes) {
+  const card = document.createElement("div");
+  card.className = classe;
+
+  const nome = document.createElement("strong");
+  nome.textContent = titulo;
+  card.append(nome);
+
+  for (let i = 0; i < detalhes.length; i++) {
+    const linha = document.createElement("span");
+    linha.textContent = detalhes[i];
+    card.append(linha);
+  }
+
+  return card;
 }
 
 function atualizarPainel() {
-    const selecionada = seletorTurma.value;
-    seletorTurma.replaceChildren(new Option("Selecione", ""));
-    const listaTurmas = document.getElementById("listaturmas");
-    const listaAtividades = document.getElementById("listaAtividades");
-    listaTurmas.replaceChildren();
-    listaAtividades.replaceChildren();
-    let alunos = 0;
-    let atividades = 0;
+  const turmaSelecionada = seletorTurma.value;
+  const listaTurmas = document.getElementById("listaturmas");
+  const listaAtividades = document.getElementById("listaAtividades");
 
-    for (const turma of turmas) {
-        alunos += Number(turma.alunos);
-        atividades += turma.atividades.length;
-        seletorTurma.add(new Option(`${turma.nome} - ${turma.disciplina}`, turma.id));
-        const card = item("item-turma", turma.nome, [
-            `Código: ${turma.codigo}`,
-            `${turma.alunos} alunos • ${turma.atividades.length} atividades`
-        ]);
-        const link = document.createElement("a");
-        link.href = "/turma.html?id=" + turma.id;
-        link.textContent = "Abrir turma";
-        card.append(link);
-        listaTurmas.append(card);
-        for (const atividade of turma.atividades) {
-            listaAtividades.append(item("item-ativ", atividade.titulo, [
-                [turma.nome, atividade.tipo, atividade.data].filter(Boolean).join(" • ")
-            ]));
-        }
+  listaTurmas.textContent = "";
+  listaAtividades.textContent = "";
+  seletorTurma.textContent = "";
+
+  const opcaoInicial = document.createElement("option");
+  opcaoInicial.value = "";
+  opcaoInicial.textContent = "Selecione";
+  seletorTurma.append(opcaoInicial);
+
+  let totalAlunos = 0;
+  let totalAtividades = 0;
+
+  for (let i = 0; i < turmas.length; i++) {
+    const turma = turmas[i];
+
+    totalAlunos += Number(turma.alunos);
+    totalAtividades += turma.atividades.length;
+
+    const opcao = document.createElement("option");
+    opcao.value = turma.id;
+    opcao.textContent = turma.nome + " - " + turma.disciplina;
+    seletorTurma.append(opcao);
+
+    const cardTurma = criarCard("item-turma", turma.nome, [
+      "Código: " + turma.codigo,
+      turma.alunos + " alunos - " + turma.atividades.length + " atividades",
+    ]);
+
+    const link = document.createElement("a");
+    link.href = "/turma.html?id=" + turma.id;
+    link.textContent = "Abrir turma";
+    cardTurma.append(link);
+    listaTurmas.append(cardTurma);
+
+    for (let j = 0; j < turma.atividades.length; j++) {
+      const atividade = turma.atividades[j];
+      let detalhes = turma.nome + " - " + atividade.tipo;
+
+      if (atividade.data) {
+        detalhes += " - " + atividade.data;
+      }
+
+      const cardAtividade = criarCard("item-ativ", atividade.titulo, [
+        detalhes,
+      ]);
+      listaAtividades.append(cardAtividade);
+    }
+  }
+
+  seletorTurma.value = turmaSelecionada;
+
+  document.getElementById("qtTurmas").textContent = turmas.length;
+  document.getElementById("qtAlunos").textContent = totalAlunos;
+  document.getElementById("qtAtividades").textContent = totalAtividades;
+}
+
+async function lerResposta(resposta) {
+  if (resposta.status === 401) {
+    window.location.href = "/index.html";
+    throw new Error("Faça login para continuar.");
+  }
+
+  const dados = await resposta.json();
+
+  if (!resposta.ok) {
+    throw new Error(dados.mensagem || "Não foi possível concluir a operação.");
+  }
+
+  return dados;
+}
+
+async function criarTurma(e) {
+  e.preventDefault();
+
+  const nome = document.getElementById("nometurma").value;
+  const disciplina = document.getElementById("materiaturma").value;
+
+  botaoTurma.disabled = true;
+  avisoTurma.textContent = "";
+
+  try {
+    const resposta = await fetch("/api/professor/turmas", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ nome, disciplina }),
+    });
+
+    const turma = await lerResposta(resposta);
+
+    turmas.push(turma);
+    formTurma.reset();
+    atualizarPainel();
+    avisoTurma.textContent = "Turma criada!";
+  } catch (erro) {
+    avisoTurma.textContent = erro.message;
+  } finally {
+    botaoTurma.disabled = false;
+  }
+}
+
+async function publicarAtividade(e) {
+  e.preventDefault();
+
+  if (seletorTurma.value === "") {
+    avisoAtividade.textContent = "Selecione uma turma.";
+    return;
+  }
+
+  const turmaId = Number(seletorTurma.value);
+  const titulo = document.getElementById("tituloativ").value;
+  const tipo = document.getElementById("seltipo").value;
+  const data = document.getElementById("dataativ").value;
+
+  botaoAtividade.disabled = true;
+  avisoAtividade.textContent = "";
+
+  try {
+    const resposta = await fetch("/api/atividades", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ turmaId, titulo, tipo, data }),
+    });
+
+    const atividade = await lerResposta(resposta);
+
+    for (let i = 0; i < turmas.length; i++) {
+      const turma = turmas[i];
+
+      if (Number(turma.id) === turmaId) {
+        turma.atividades.push(atividade);
+        break;
+      }
     }
 
-    seletorTurma.value = selecionada;
-    document.getElementById("qtTurmas").textContent = turmas.length;
-    document.getElementById("qtAlunos").textContent = alunos;
-    document.getElementById("qtAtividades").textContent = atividades;
+    formAtividade.reset();
+    atualizarPainel();
+    avisoAtividade.textContent = "Atividade publicada!";
+  } catch (erro) {
+    avisoAtividade.textContent = erro.message;
+  } finally {
+    botaoAtividade.disabled = false;
+  }
 }
-
-async function consultar(url, corpo) {
-    const resposta = await fetch(url, corpo && {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(corpo)
-    });
-    if (resposta.status === 401) window.location.href = "/index.html";
-    const dados = await resposta.json();
-    if (!resposta.ok) throw new Error(dados.mensagem || "Não foi possível concluir a operação.");
-    return dados;
-}
-
-function enviar(formulario, aviso, acao) {
-    formulario.addEventListener("submit", async evento => {
-        evento.preventDefault();
-        const botao = formulario.querySelector('button[type="submit"]');
-        botao.disabled = true;
-        aviso.textContent = "";
-        try {
-            const mensagem = await acao();
-            formulario.reset();
-            atualizarPainel();
-            aviso.textContent = mensagem;
-        } catch (erro) {
-            aviso.textContent = erro.message;
-        } finally {
-            botao.disabled = false;
-        }
-    });
-}
-
-enviar(formTurma, document.getElementById("msgturma"), async () => {
-    const turma = await consultar("/api/professor/turmas", {
-        nome: document.getElementById("nometurma").value,
-        disciplina: document.getElementById("materiaturma").value
-    });
-    turmas.push(turma);
-    return "Turma criada!";
-});
-
-enviar(formAtividade, document.getElementById("msgativ"), async () => {
-    const turmaId = Number(seletorTurma.value);
-    const atividade = await consultar("/api/atividades", {
-        turmaId,
-        titulo: document.getElementById("tituloativ").value,
-        tipo: document.getElementById("seltipo").value,
-        data: document.getElementById("dataativ").value
-    });
-    turmas.find(turma => Number(turma.id) === turmaId)?.atividades.push(atividade);
-    return "Atividade publicada!";
-});
 
 async function iniciar() {
-    const botoes = [formTurma, formAtividade].map(form => form.querySelector('button[type="submit"]'));
-    botoes.forEach(botao => { botao.disabled = true; });
-    try {
-        const { usuario } = await consultar("/api/logado");
-        if (usuario.perfil !== "professor") {
-            window.location.href = "/index.html";
-            return;
-        }
-        nomeUser.textContent = usuario.nome;
-        turmas = await consultar("/api/professor/turmas");
-        atualizarPainel();
-        botoes.forEach(botao => { botao.disabled = false; });
-    } catch (erro) {
-        document.getElementById("msgturma").textContent = erro.message;
+  botaoTurma.disabled = true;
+  botaoAtividade.disabled = true;
+
+  try {
+    const respostaUsuario = await fetch("/api/logado");
+    const dados = await lerResposta(respostaUsuario);
+    const usuario = dados.usuario;
+
+    if (usuario.perfil !== "professor") {
+      window.location.href = "/index.html";
+      return;
     }
+
+    nomeUser.textContent = usuario.nome;
+
+    const respostaTurmas = await fetch("/api/professor/turmas");
+    turmas = await lerResposta(respostaTurmas);
+
+    atualizarPainel();
+    botaoTurma.disabled = false;
+    botaoAtividade.disabled = false;
+  } catch (erro) {
+    avisoTurma.textContent = erro.message;
+  }
 }
+
+formTurma.addEventListener("submit", criarTurma);
+formAtividade.addEventListener("submit", publicarAtividade);
 
 iniciar();

@@ -1,46 +1,99 @@
 <!doctype html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Turma — Studium</title>
-  <link rel="stylesheet" href="/css/style.css">
-  <link rel="stylesheet" href="/css/painel.css">
-  <link rel="stylesheet" href="/css/navegacao.css">
-  <link rel="stylesheet" href="/css/turma.css">
-  <script src="/js/turma.js" defer></script>
-</head>
-<body>
-  <header class="nav-studium">
-    <a class="nav-card nav-marca" href="/" aria-label="Studium, painel">
-      <img src="/img/STUDIUM%20(150%20x%20100%20px).svg" alt="Studium">
-    </a>
-    <nav class="nav-card nav-links" aria-label="Navegação principal">
-      <a href="/">Meu painel</a>
-      <a href="" aria-current="page">Turma</a>
-    </nav>
-  </header>
-  <main class="pagina-turma">
-    <p id="mensagem" role="status"></p>
-    <div id="conteudo" hidden>
-      <h1 id="titulo">Turma</h1>
-      <p id="detalhes"></p>
-      <section class="bloco"><h2>Atividades e provas</h2><div id="atividades"></div></section>
-      <section class="bloco"><h2>Materiais</h2><div id="materiais"></div></section>
-      <section class="bloco"><h2>Avisos</h2><div id="avisos"></div></section>
-      <section class="bloco" id="lista-alunos" hidden><h2>Alunos matriculados</h2><div id="alunos"></div></section>
-      <section class="bloco" id="publicar" hidden>
-        <h2>Publicar na turma</h2>
-        <form id="form-publicar" class="formpainel">
-          <label>Tipo <select name="tipo"><option value="atividade">Atividade</option><option value="prova">Prova</option><option value="material">Material</option><option value="aviso">Aviso</option></select></label>
-          <label>Título <input name="titulo" maxlength="150" required></label>
-          <label>Texto <textarea name="texto" maxlength="5000" rows="5" required></textarea></label>
-          <label id="campo-prazo">Prazo <input name="data" type="date"></label>
-          <label id="campo-arquivo" hidden>Link do material <input name="arquivo" type="url" maxlength="255"></label>
-          <button class="btn btn1" type="submit">Publicar</button>
-        </form>
-      </section>
-    </div>
-  </main>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Turma — Studium</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/painel.css" />
+    <link rel="stylesheet" href="/css/navegacao.css" />
+    <link rel="stylesheet" href="/css/turma.css" />
+    <script src="/js/turma.js" defer></script>
+  </head>
+  <body>
+    <header class="nav-studium">
+      <a class="nav-card nav-marca" href="/" aria-label="Studium, painel">
+        <img src="/img/STUDIUM%20(150%20x%20100%20px).svg" alt="Studium" />
+      </a>
+      <nav class="nav-card nav-links" aria-label="Navegação principal">
+        <a href="/">Meu painel</a>
+        <a href="" aria-current="page">Turma</a>
+      </nav>
+    </header>
+    <main class="pagina-turma">
+      <p id="mensagem" role="status"></p>
+      <div id="conteudo" hidden>
+        <h1 id="titulo">Turma</h1>
+        <p id="detalhes"></p>
+        <section class="bloco">
+          <h2>Atividades e provas</h2>
+          <div id="atividades"></div>
+        </section>
+        <section class="bloco">
+          <h2>Materiais</h2>
+          <div id="materiais"></div>
+        </section>
+        <section class="bloco">
+          <h2>Avisos</h2>
+          <div id="avisos"></div>
+        </section>
+        <section class="bloco" id="lista-alunos" hidden>
+          <h2>Alunos matriculados</h2>
+          <div id="alunos"></div>
+        </section>
+        <section class="bloco" id="publicar" hidden>
+          <h2>Publicar na turma</h2>
+          <form id="form-publicar" class="formpainel">
+            <label>
+              Tipo
+              <select id="tipo-publicacao" name="tipo">
+                <option value="atividade">Atividade</option>
+                <option value="prova">Prova</option>
+                <option value="material">Material</option>
+                <option value="aviso">Aviso</option>
+              </select>
+            </label>
+
+            <label>
+              Título
+              <input
+                id="titulo-publicacao"
+                name="titulo"
+                maxlength="150"
+                required
+              />
+            </label>
+
+            <label>
+              Texto
+              <textarea
+                id="texto-publicacao"
+                name="texto"
+                maxlength="5000"
+                rows="5"
+                required
+              ></textarea>
+            </label>
+
+            <label id="campo-prazo">
+              Prazo
+              <input id="data-publicacao" name="data" type="date" />
+            </label>
+
+            <label id="campo-arquivo" hidden>
+              Link do material
+              <input
+                id="arquivo-publicacao"
+                name="arquivo"
+                type="url"
+                maxlength="255"
+              />
+            </label>
+
+            <button class="btn btn1" type="submit">Publicar</button>
+          </form>
+        </section>
+      </div>
+    </main>
+  </body>
 </html>

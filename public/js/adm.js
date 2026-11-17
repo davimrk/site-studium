@@ -73,4 +73,57 @@ botoes.forEach(botao => {
     });
 });
 
+
+const botoes = document.querySelectorAll("[data-consulta]");
+const grafico = document.getElementById("grafico");
+const resultado = document.getElementById("resultado");
+const imagemGrafico = document.createElement("img");
+
+imagemGrafico.alt = "Gráfico administrativo do Studium";
+imagemGrafico.classList.add("imagem-grafico");
+grafico.appendChild(imagemGrafico);
+
+botoes.forEach(botao => {
+    botao.addEventListener("click", async () => {
+        const tipo = botao.dataset.consulta;
+
+        botoes.forEach(item => {
+            item.setAttribute("aria-pressed", "false");
+        });
+
+        botao.setAttribute("aria-pressed", "true");
+
+        grafico.hidden = false;
+        resultado.hidden = true;
+
+        grafico.innerHTML = "<p>Carregando gráfico...</p>";
+
+        try {
+            const resposta = await fetch(
+                `http://127.0.0.1:5001/api/grafico/${tipo}`
+            );
+
+            if (!resposta.ok) {
+                throw new Error("Não foi possível carregar o gráfico.");
+            }
+
+            const imagem = await resposta.blob();
+            const urlImagem = URL.createObjectURL(imagem);
+
+            grafico.innerHTML = "";
+            imagemGrafico.src = urlImagem;
+            grafico.appendChild(imagemGrafico);
+
+        } catch (erro) {
+            grafico.innerHTML = `
+                <p>Erro ao carregar o gráfico.</p>
+                <p>${erro.message}</p>
+            `;
+
+            console.error(erro);
+        }
+    });
+});
+
+
 botoes[0].click();

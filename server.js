@@ -33,13 +33,13 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/img", express.static(path.join(__dirname, "img")));
 app.use("/fonts", express.static(path.join(__dirname, "fonts")));
- 
+
 const opcoesCookies = {
     httpOnly: true,
     sameSite: "strict",
     secure: process.env.NODE_ENV === "production"
 };
- 
+
 if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32) {
     throw new Error("Configure uma chave JWT com pelo menos 32 caracteres");
 }
@@ -100,30 +100,30 @@ const somenteAdmin = exigirPerfil("admin");
 app.post("/api/cadastro", async (req, res) => {
     try {
         const { nome, email, senha, perfil } = req.body ?? {};
- 
+
         if (![nome, email, senha].every(valor => typeof valor === "string" && valor.trim()) || !perfil || Buffer.byteLength(senha) > 72) {
             return res.status(400).json({
                 mensagem: "Preencha todos os campos e use uma senha de até 72 bytes."
             });
         }
- 
+
         if (perfil !== "aluno" && perfil !== "professor") {
             return res.status(400).json({
                 mensagem: "Perfil inválido"
             });
         }
- 
+
         const usuarioExiste = await buscarUsuarioEmail(email.trim());
- 
+
         if (usuarioExiste) {
             return res.status(400).json({
                 mensagem: "Email já cadastrado"
             });
         }
- 
+
         const senhaHash = await bcrypt.hash(senha, 10);
         const id = await cadastrarUsuario(nome.trim(), email.trim(), senhaHash, perfil);
- 
+
         res.status(201).json({
             mensagem: "Cadastro realizado com sucesso!",
                 usuario: {
@@ -133,7 +133,7 @@ app.post("/api/cadastro", async (req, res) => {
                     perfil: perfil
                     }
         });
- 
+
     } catch (erro) {
         if (erro.code === "ER_DUP_ENTRY") {
             return res.status(400).json({ mensagem: "Email já cadastrado" });
@@ -179,12 +179,12 @@ app.post("/api/admin/login", login(true));
 
 app.post("/api/auth/logout", (req, res) => {
     res.clearCookie("token", opcoesCookies);
- 
+
     res.json({
         mensagem: "Logout efetuado!"
     });
 });
- 
+
 app.get("/api/logado", verificarToken, (req, res) => {
     res.json({ usuario: req.usuario });
 });
@@ -433,7 +433,7 @@ app.get("/api/admin/disciplinas", verificarToken, somenteAdmin, async (req, res)
 });
 
 app.get("/api/admin/atividades", verificarToken, somenteAdmin, async (req, res) => {
-    const atividades = await consultar(
+    const atividades = await consultar( // date_format para formatar a data no formato do brasil, e order by para ordenar por data de entrega, e depois por id
         `SELECT a.id, a.titulo AS nome, a.tipo, t.nome AS turma,
                 DATE_FORMAT(a.data_entrega, '%d/%m/%Y') AS prazo
          FROM atividades a
@@ -456,5 +456,13 @@ app.use((erro, req, res, next) => {
     res.status(500).json({ mensagem: "Não foi possível concluir a operação." });
 });
 
-const porta = Number(process.env.PORT || 3000);
-app.listen(porta, () => console.log("Servidor rodando na porta " + porta));
+app.get("/turma/:turmaId", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "turma.html"));
+});
+
+app.get("/turma/:turmaId/atividade/:atividadeId", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "atividade.html"));
+});
+
+const servidor = "localhost:3000";
+app.listen(3000, () => console.log(`Servidor rodando em ${servidor}`));
